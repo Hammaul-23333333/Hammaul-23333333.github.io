@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title> Menembak Cewek 2025 - Game dengan Kata-kata</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 600px;
+    width: 350px;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #e0f7fa;
+    user-select: none;
+  }
+  #game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at center, #142d4c 90%, #090f16 100%);
+    border: 3px solid #21c7f8;
+    border-radius: 16px;
+    box-shadow:
+      0 0 15px #21c7f8,
+      inset 0 0 20px #0ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    text-align: center;
+  }
+  header {
+    width: 90%;
+    font-size: 1.6rem;
+    text-shadow: 0 0 8px #0ff;
+    letter-spacing: 1.2px;
+    margin-bottom: 8px;
+  }
+  #scoreboard {
+    font-size: 1.3rem;
+    margin: 8px 0;
+    letter-spacing: 1.1px;
+    text-shadow: 0 0 6px #0ff;
+    min-height: 28px;
+  }
+  #timer {
+    font-size: 1.1rem;
+    margin: 4px 0 12px 0;
+    text-shadow: 0 0 6px #0ff;
+    min-height: 24px;
+  }
+  #game-area {
+    position: relative;
+    flex-grow: 1;
+    width: 100%;
+    max-width: 330px;
+    border: 2px solid #21c7f8aa;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #071a37 0%, #0a2546 100%);
+    overflow: hidden;
+    touch-action: manipulation;
+  }
+  .target {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: url('https://i.ibb.co/kgSNxH3/girl-target.png') no-repeat center/cover;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 3px #ff4081aa;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s ease-out;
+  }
+  .target:active {
+    transform: scale(1.2);
+  }
+  button#start-btn {
+    width: 90%;
+    margin: 12px 0 0 0;
+    padding: 14px 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: #00bcd4;
+    border: none;
+    border-radius: 24px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    box-shadow: 0 0 12px #00bcd4;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    user-select: none;
+  }
+  button#start-btn:hover:not(:disabled) {
+    background: #00acc1;
+  }
+  button#start-btn:disabled {
+    background: #0097a7aa;
+    cursor: default;
+  }
+  #message {
+    font-size: 1rem;
+    color: #ff4081;
+    min-height: 26px;
+    letter-spacing: 1.1px;
+    margin-top: 6px;
+  }
+  #end-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 320px;
+    max-width: 90%;
+    transform: translate(-50%, -50%);
+    background: #142d4cdd;
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-shadow: 0 0 20px #ff4081;
+    display: none;
+    color: #ffe;
+    user-select: auto;
+  }
+  #end-screen h2 {
+    margin: 0 0 12px 0;
+    font-size: 1.6rem;
+    text-shadow: 0 0 8px #ff4081;
+  }
+  #end-screen p.kata-kata {
+    font-size: 1.2rem;
+    line-height: 1.4;
+    margin: 6px 0 16px 0;
+    font-style: italic;
+    color: #ff80ab;
+    text-shadow: 0 0 8px #ff80abcc;
+  }
+  #end-screen button#restart-btn {
+    background: #ff4081;
+    border: none;
+    border-radius: 20px;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 14px #ff4081;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+  }
+  #end-screen button#restart-btn:hover {
+    background: #e040fb;
+  }
+  @media (max-width:350px) {
+    #game-area {
+      max-width: 100%;
+    }
+    .target {
+      width: 50px;
+      height: 50px;
+    }
+    #end-screen {
+      width: 90%;
+    }
+  }
+</style>
+</head>
+<body>
+  <div id="game-container" role="main" aria-label="Game Menembak Cewek dengan Kata-kata">
+    <header>Menembak Cewek 2025</header>
+    <div id="scoreboard" aria-live="polite" aria-atomic="true">Score: 0</div>
+    <div id="timer" aria-live="polite" aria-atomic="true">Waktu: 30 detik</div>
+    <div id="game-area" aria-label="Area bermain game">
+      <!-- Targets appear here -->
+    </div>
+    <div id="message" aria-live="polite" aria-atomic="true"></div>
+    <button id="start-btn" aria-pressed="false" aria-label="Mulai permainan menembak">Mulai Permainan</button>
+
+    <div id="end-screen" role="dialog" aria-modal="true" aria-labelledby="end-title" aria-describedby="end-description">
+      <h2 id="end-title">Permainan Selesai!</h2>
+      <p id="end-score" style="font-weight:bold; margin-bottom: 12px;">Skor akhir: 0</p>
+      <p class="kata-kata" id="kata-kata"></p>
+      <button id="restart-btn" aria-label="Mulai ulang permainan">Main Lagi</button>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const gameArea = document.getElementById('game-area');
+      const startBtn = document.getElementById('start-btn');
+      const scoreboard = document.getElementById('scoreboard');
+      const timerDisplay = document.getElementById('timer');
+      const messageDisplay = document.getElementById('message');
+      const endScreen = document.getElementById('end-screen');
+      const endScoreDisplay = document.getElementById('end-score');
+      const kataKataDisplay = document.getElementById('kata-kata');
+      const restartBtn = document.getElementById('restart-btn');
+
+      const gameDurationSeconds = 30;
+      let score = 0;
+      let timeLeft = gameDurationSeconds;
+      let gameInterval = null;
+      let targetInterval = null;
+
+      const kataKataList = [
+        "Kamu itu seperti sinyal WiFi, selalu membuat aku terkoneksi.",
+        "Kamu tahu nggak habis ini aku mau kemana? Ke hatimu.",
+        "Jangan cuma jadi target di permainan ini, tapi juga di hatiku.",
+        "Aku udah jatuh cinta tanpa alasan, mungkin kamu alasannya.",
+        "Kamu manis banget, kayak gula di dalam kopiku.",
+        "Bersama kamu, dunia terasa seperti game yang penuh hadiah.",
+        "Aku nggak perlu cheat, karena kamu sudah jadi yang terbaik.",
+        "Kamu target utamaku dalam hidup ini.",
+        "Kalau kamu ada di leaderboard, aku pasti nomor satu untukmu.",
+        "Makin sering aku lihat kamu, makin sulit aku lepas dari game cinta ini.",
+        "Kamu seperti power-up di hari-hariku.",
+        "Hati aku level up setiap kali melihat senyummu.",
+        "Mau jadi player satu terus bareng aku nggak?",
+        "Jangan luput dari pandanganku, karena kamu sudah jadi incaranku.",
+        "Kamu adalah hadiah terbesar yang aku tembak di permainan hidup ini."
+      ];
+
+      function randomPosition(targetSize) {
+        const maxX = gameArea.clientWidth - targetSize;
+        const maxY = gameArea.clientHeight - targetSize;
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+        return { x, y };
+      }
+
+      function createTarget() {
+        const target = document.createElement('div');
+        target.classList.add('target');
+        const { x, y } = randomPosition(60);
+        target.style.left = `${x}px`;
+        target.style.top = `${y}px`;
+
+        target.addEventListener('click', () => {
+          score++;
+          scoreboard.textContent = `Score: ${score}`;
+          messageDisplay.textContent = 'Tembakan tepat! 🎯';
+          target.style.transform = 'scale(2)';
+          target.style.opacity = '0';
+          setTimeout(() => {
+            target.remove();
+          }, 300);
+        });
+
+        gameArea.appendChild(target);
+
+        setTimeout(() => {
+          if (gameArea.contains(target)) {
+            gameArea.removeChild(target);
+            messageDisplay.textContent = '';
+          }
+        }, 1500);
+      }
+
+      function startGame() {
+        score = 0;
+        timeLeft = gameDurationSeconds;
+        scoreboard.textContent = `Score: ${score}`;
+        timerDisplay.textContent = `Waktu: ${timeLeft} detik`;
+        messageDisplay.textContent = '';
+        startBtn.disabled = true;
+        startBtn.setAttribute('aria-pressed', 'true');
+
+        endScreen.style.display = 'none';
+
+        while (gameArea.firstChild) {
+          gameArea.removeChild(gameArea.firstChild);
+        }
+
+        targetInterval = setInterval(createTarget, 900);
+
+        gameInterval = setInterval(() => {
+          timeLeft--;
+          timerDisplay.textContent = `Waktu: ${timeLeft} detik`;
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      function endGame() {
+        clearInterval(gameInterval);
+        clearInterval(targetInterval);
+        startBtn.disabled = false;
+        startBtn.setAttribute('aria-pressed', 'false');
+
+        while (gameArea.firstChild) {
+          gameArea.removeChild(gameArea.firstChild);
+        }
+        messageDisplay.textContent = '';
+
+        endScoreDisplay.textContent = `Skor akhir: ${score}`;
+        kataKataDisplay.textContent = randomKataKata();
+        endScreen.style.display = 'block';
+
+        restartBtn.focus();
+      }
+
+      function randomKataKata() {
+        const idx = Math.floor(Math.random() * kataKataList.length);
+        return kataKataList[idx];
+      }
+
+      startBtn.addEventListener('click', startGame);
+      restartBtn.addEventListener('click', () => {
+        endScreen.style.display = 'none';
+        startGame();
+      });
+    })();
+  </script>
+</body>
+</html>
+
