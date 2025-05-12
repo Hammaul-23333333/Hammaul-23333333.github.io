@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Absensi Keseluruhan Siswa - Hadir, Sakit, Alpa dengan Total</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%;
+    max-width: 350px;
+    max-height: 600px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    touch-action: manipulation;
+  }
+  header {
+    text-align: center;
+    background: rgba(0,0,0,0.25);
+    padding: 15px 20px;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  #clock {
+    margin-top: 8px;
+    font-weight: 500;
+    font-size: 1.2rem;
+  }
+  main {
+    flex: 1;
+    padding: 10px 20px 20px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.15);
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .student-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 15px;
+  }
+  .student {
+    background: rgba(255 255 255 / 0.12);
+    margin-bottom: 10px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .student-name {
+    flex: 1 1 auto;
+    user-select: text;
+  }
+  .attendance-options {
+    flex: 0 0 260px;
+    display: flex;
+    justify-content: space-around;
+  }
+  label {
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  input[type="radio"] {
+    accent-color: #ffd45f;
+    cursor: pointer;
+  }
+  button#save-btn {
+    background: #ffd45f;
+    border: none;
+    border-radius: 15px;
+    padding: 15px 0;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #3a2e00;
+    box-shadow: 0 5px 10px rgba(255, 212, 95, 0.7);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+  }
+  button#save-btn:active {
+    transform: scale(0.97);
+  }
+  section#summary {
+    margin-top: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 10px 15px;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  section#summary h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+  .summary-row, .total-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255 255 255 / 0.2);
+    padding: 6px 0;
+  }
+  .summary-row:last-child, .total-row:last-child {
+    border-bottom: none;
+  }
+  .status-hadir {
+    color: #7cff91;
+    font-weight: 700;
+  }
+  .status-sakit {
+    color: #ffe257;
+    font-weight: 700;
+  }
+  .status-alpa {
+    color: #ff7e7e;
+    font-weight: 700;
+  }
+  .status-null {
+    color: #cccccc;
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+
+  @media (max-width: 350px) {
+    .attendance-options {
+      flex: 0 0 230px;
+      font-size: 0.85rem;
+    }
+    button#save-btn {
+      font-size: 1.1rem;
+      padding: 12px 0;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Absensi Keseluruhan Siswa</h1>
+  <div id="clock" aria-live="polite">Loading time...</div>
+</header>
+<main>
+  <div class="student-list" id="student-list" tabindex="0" aria-label="Daftar siswa untuk absensi">
+    <!-- Students injected here -->
+  </div>
+  <button id="save-btn" aria-label="Simpan absensi">Simpan Absensi</button>
+  <section id="summary" aria-live="polite" aria-atomic="true">
+    <h2>Rekap Absensi Hari Ini</h2>
+    <div id="summary-content">Belum ada data absensi disimpan.</div>
+  </section>
+</main>
+
+<script>
+(() => {
+  // Student data
+  const students = [
+    { id: 'S001', name: 'Ali' },
+    { id: 'S002', name: 'Budi' },
+    { id: 'S003', name: 'Citra' },
+    { id: 'S004', name: 'Dewi' },
+    { id: 'S005', name: 'Eka' },
+    { id: 'S006', name: 'Fajar' },
+    { id: 'S007', name: 'Gita' },
+  ];
+
+  const STORAGE_KEY = 'absensi_keseluruhan_harian';
+
+  const studentListElem = document.getElementById('student-list');
+  const summaryContentElem = document.getElementById('summary-content');
+  const saveBtn = document.getElementById('save-btn');
+
+  // Format YYYY-MM-DD
+  function getTodayKey() {
+    const d = new Date();
+    return d.toISOString().split('T')[0];
+  }
+
+  // Update clock
+  function updateClock() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateStr = now.toLocaleDateString(undefined, options);
+    const timeStr = now.toLocaleTimeString();
+    document.getElementById('clock').textContent = `${dateStr} - ${timeStr}`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // Render student list with choices
+  function renderStudentList(savedData = {}) {
+    studentListElem.innerHTML = '';
+    students.forEach(student => {
+      const savedStatus = savedData[student.id] ?? null;
+      const div = document.createElement('div');
+      div.className = 'student';
+      div.setAttribute('data-student-id', student.id);
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'student-name';
+      nameSpan.textContent = student.name;
+
+      const optionsDiv = document.createElement('div');
+      optionsDiv.className = 'attendance-options';
+
+      const options = [
+        { label: 'Hadir', value: 'hadir' },
+        { label: 'Sakit', value: 'sakit' },
+        { label: 'Alpa', value: 'alpa' },
+        { label: 'Null', value: 'null' }
+      ];
+
+      options.forEach(opt => {
+        const label = document.createElement('label');
+        label.title = opt.label;
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = student.id;
+        radio.value = opt.value;
+        if (savedStatus === null && opt.value === 'null') radio.checked = true;
+        if (savedStatus === opt.value) radio.checked = true;
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(opt.label));
+        optionsDiv.appendChild(label);
+      });
+
+      div.appendChild(nameSpan);
+      div.appendChild(optionsDiv);
+      studentListElem.appendChild(div);
+    });
+  }
+
+  // Save attendance data
+  function saveAttendance() {
+    const todayKey = getTodayKey();
+    const records = {};
+    students.forEach(student => {
+      const radios = studentListElem.querySelectorAll(`input[name="${student.id}"]`);
+      let selectedValue = null;
+      radios.forEach(radio => {
+        if(radio.checked) selectedValue = radio.value;
+      });
+      if(selectedValue === 'null') selectedValue = null;
+      records[student.id] = selectedValue;
+    });
+    const allDataRaw = localStorage.getItem(STORAGE_KEY);
+    let allData = allDataRaw ? JSON.parse(allDataRaw) : {};
+    allData[todayKey] = records;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+    renderSummary(records);
+    alert('Absensi berhasil disimpan!');
+  }
+
+  // Render summary with totals
+  function renderSummary(records) {
+    if (!records || Object.keys(records).length === 0) {
+      summaryContentElem.textContent = 'Belum ada data absensi disimpan.';
+      return;
+    }
+    // Clear
+    summaryContentElem.innerHTML = '';
+    // Individual rows
+    let hadirCount = 0, sakitCount = 0, alpaCount = 0;
+    students.forEach(student => {
+      const s = records[student.id];
+      if(s === 'hadir') hadirCount++;
+      else if(s === 'sakit') sakitCount++;
+      else if(s === 'alpa') alpaCount++;
+      const statusText = s === 'hadir' ? 'Hadir' : s === 'sakit' ? 'Sakit' : s === 'alpa' ? 'Alpa' : 'Null';
+      const statusClass = s === 'hadir' ? 'status-hadir' : s === 'sakit' ? 'status-sakit' : s === 'alpa' ? 'status-alpa' : 'status-null';
+      const row = document.createElement('div');
+      row.className = 'summary-row';
+      row.innerHTML = `<span>${student.name}</span><span class="${statusClass}">${statusText}</span>`;
+      summaryContentElem.appendChild(row);
+    });
+    // Totals row
+    const totalRow = document.createElement('div');
+    totalRow.className = 'total-row';
+    totalRow.style.marginTop = '8px';
+    totalRow.style.fontWeight = '700';
+    totalRow.innerHTML = `
+      <span>Jumlah:</span>
+      <span>
+        <span class="status-hadir">Hadir: ${hadirCount}</span> |
+        <span class="status-sakit">Sakit: ${sakitCount}</span> |
+        <span class="status-alpa">Alpa: ${alpaCount}</span>
+      </span>
+    `;
+    summaryContentElem.appendChild(totalRow);
+  }
+
+  // Load today's attendance
+  function loadTodayAttendance() {
+    const todayKey = getTodayKey();
+    const allDataRaw = localStorage.getItem(STORAGE_KEY);
+    let allData = allDataRaw ? JSON.parse(allDataRaw) : {};
+    return allData[todayKey] || {};
+  }
+
+  function init() {
+    const savedRecords = loadTodayAttendance();
+    renderStudentList(savedRecords);
+    renderSummary(savedRecords);
+    saveBtn.addEventListener('click', saveAttendance);
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
