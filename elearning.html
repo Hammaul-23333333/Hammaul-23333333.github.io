@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>E-Learning Application</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html, body {
+    height: 100%;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #333;
+    overflow: hidden;
+  }
+
+  #app {
+    max-width: 350px;
+    max-height: 600px;
+    width: 100vw;
+    height: 100vh;
+    margin: 0 auto;
+    background: #f8f9fc;
+    border-radius: 16px;
+    box-shadow: 0 12px 25px rgba(0,0,0,.15);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Scroll container */
+  .page {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px 20px 30px 20px;
+    -webkit-overflow-scrolling: touch;
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+  }
+
+  h1, h2, h3 {
+    font-weight: 600;
+    color: #4b3f72;
+  }
+
+  /* Common button */
+  button, .btn {
+    background: #6b5b95;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-top: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(107,91,149,0.3);
+  }
+  button:hover, .btn:hover {
+    background: #594885;
+  }
+  button:disabled, .btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  input[type=email], input[type=password], input[type=text], input[type=date], select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1.8px solid #a1a1a170;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    transition: border-color 0.3s ease;
+  }
+  input[type=email]:focus, input[type=password]:focus, input[type=text]:focus, input[type=date]:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #6b5b95;
+  }
+
+  label {
+    font-weight: 500;
+    font-size: 14px;
+    color: #4b3f72;
+  }
+
+  /* Header */
+  header {
+    background: #6b5b95;
+    color: white;
+    padding: 16px 20px;
+    border-radius: 16px 16px 0 0;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  header button#logout-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+  }
+  header button#logout-btn:hover {
+    background: rgba(255,255,255,0.2);
+  }
+
+  /* Navigation menu */
+  nav {
+    display: flex;
+    background: #594885;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    justify-content: space-around;
+  }
+  nav button.nav-btn {
+    background: transparent;
+    color: #d1c4e9;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  nav button.nav-btn.active,
+  nav button.nav-btn:hover {
+    background: #7a61bf;
+    color: white;
+  }
+
+  /* Scroll containers inside pages */
+  .scrollable-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+  .scrollable-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollable-list::-webkit-scrollbar-thumb {
+    background-color: #7a61bf99;
+    border-radius: 4px;
+  }
+
+  /* Login and forgot password forms */
+  #login-form, #forgot-form {
+    display: flex;
+    flex-direction: column;
+  }
+  #forgot-form {
+    font-size: 14px;
+  }
+  #forgot-form p {
+    margin-bottom: 12px;
+    color: #4b3f72;
+  }
+  #forgot-form button.btn,
+  #forgot-form input[type=email] {
+    margin-top: 10px;
+  }
+  #back-to-login {
+    background: transparent;
+    color: #6b5b95;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 12px;
+  }
+  #back-to-login:hover {
+    text-decoration: underline;
+  }
+
+  /* Dashboard cards */
+  .card {
+    background: #f5f2fa;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px #cdc6e3;
+  }
+  .card h3 {
+    font-size: 16px;
+    color: #533e86;
+  }
+  .card p {
+    font-size: 14px;
+    margin-top: 6px;
+    color: #6a5d8c;
+  }
+
+  /* Schedule list */
+  .schedule-item {
+    background: #e6e1f7;
+    padding: 9px 14px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #473977;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+
+  /* Subject list */
+  .subject-list button {
+    background: #7a61bf;
+    border-radius: 12px;
+    padding: 10px 16px;
+    color: white;
+    font-weight: 600;
+    width: 100%;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 8px rgb(122 97 191 / 0.4);
+    transition: background-color 0.3s ease;
+  }
+  .subject-list button:hover {
+    background: #9987cd;
+  }
+
+  /* Attendance */
+  #attendance-btn {
+    background: #51b679;
+    margin-top: 30px;
+  }
+  #attendance-btn.present {
+    background: #4a9a62;
+  }
+
+  /* Exam subject parts */
+  .exam-subjects button {
+    background: #6b5b95;
+    margin: 6px 0;
+  }
+  .exam-subjects button:hover {
+    background: #594885;
+  }
+
+  /* Profile photo preview */
+  #profile-photo-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #6b5b95;
+    margin-bottom: 14px;
+    align-self: center;
+  }
+
+  /* Form grid for profile */
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 16px;
+  }
+
+  /* Settings sections */
+  .settings-section {
+    margin-top: 20px;
+  }
+
+  /* Responsive adjustments */
+  @media screen and (max-width: 360px) {
+    #app {
+      border-radius: 0;
+      max-width: 100vw;
+      max-height: 100vh;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="app" role="main" aria-live="polite">
+  <!-- Login view -->
+  <section id="view-login" class="page" aria-label="Login screen">
+    <h1>Welcome to E-Learning</h1>
+    <form id="login-form" aria-describedby="login-desc" autocomplete="off" novalidate>
+      <label for="login-email">Email address</label>
+      <input type="email" id="login-email" name="login-email" placeholder="you@example.com" required aria-required="true" autocomplete="email" />
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" name="login-password" placeholder="Your password" required aria-required="true" autocomplete="current-password" />
+      <button type="submit">Log In</button>
+    </form>
+    <button id="forgot-password-link" aria-haspopup="dialog" aria-controls="view-forgot">Forgot Password?</button>
+  </section>
+
+  <!-- Forgot password view -->
+  <section id="view-forgot" class="page" aria-label="Forgot password screen" hidden>
+    <h1>Forgot Password</h1>
+    <form id="forgot-form" novalidate autocomplete="off">
+      <p>Enter your email address to reset your password. In this demo, password reset is just a simulated message.</p>
+      <label for="forgot-email">Email address</label>
+      <input type="email" id="forgot-email" name="forgot-email" placeholder="you@example.com" required aria-required="true" autocomplete="email" />
+      <button type="submit">Send Reset Link</button>
+    </form>
+    <button id="back-to-login">Back to Login</button>
+  </section>
+
+  <!-- Main App view -->
+  <section id="view-main" class="page" aria-label="Main application" hidden>
+    <header>
+      <h1>E-Learning Dashboard</h1>
+      <button id="logout-btn" aria-label="Log out">Log Out</button>
+    </header>
+    <nav role="navigation" aria-label="Main menu navigation">
+      <button class="nav-btn active" data-target="dashboard" aria-current="page">Dashboard</button>
+      <button class="nav-btn" data-target="schedule">Schedule</button>
+      <button class="nav-btn" data-target="subjects">Subjects</button>
+      <button class="nav-btn" data-target="attendance">Attendance</button>
+      <button class="nav-btn" data-target="exams">Semester Exams</button>
+      <button class="nav-btn" data-target="settings">Settings</button>
+    </nav>
+
+    <div id="page-dashboard" class="subpage scrollable-list" aria-label="Dashboard content">
+      <div class="card">
+        <h3>Welcome to your E-Learning Portal</h3>
+        <p>This app lets you manage your study schedule, attendance, exams, and profile easily on your device. Navigate using the menu above.</p>
+      </div>
+      <div class="card">
+        <h3>Latest Announcements</h3>
+        <p>No new announcements currently. Stay tuned!</p>
+      </div>
+    </div>
+
+    <div id="page-schedule" class="subpage scrollable-list" aria-label="Schedule" hidden>
+      <h2>Schedule of Classes</h2>
+      <div id="schedule-list">
+        <!-- schedule items inserted by JS -->
+      </div>
+    </div>
+
+    <div id="page-subjects" class="subpage scrollable-list" aria-label="Subjects" hidden>
+      <h2>Your Subjects</h2>
+      <div class="subject-list" id="subject-list">
+        <!-- subject buttons inserted by JS -->
+      </div>
+    </div>
+
+    <div id="page-attendance" class="subpage" aria-label="Attendance" hidden>
+      <h2>Attendance</h2>
+      <p>Click the button below to mark yourself as PRESENT for today's attendance.</p>
+      <button id="attendance-btn" aria-pressed="false" aria-label="Mark Attendance as Present">Mark as Present</button>
+    </div>
+
+    <div id="page-exams" class="subpage scrollable-list" aria-label="Semester Exams" hidden>
+      <h2>Semester Exams</h2>
+      <p>Select a subject to start the exam.</p>
+      <div class="exam-subjects" id="exam-subjects">
+        <!-- exam subject buttons inserted by JS -->
+      </div>
+      <div id="exam-content" hidden>
+        <h3 id="exam-subject-title"></h3>
+        <p>Exam questions are simulated in this demo.</p>
+        <button id="exam-back-btn" class="btn">Back to Exams List</button>
+      </div>
+    </div>
+
+    <div id="page-settings" class="subpage scrollable-list" aria-label="Settings" hidden>
+      <h2>Settings & Profile</h2>
+      
+      <section aria-label="Profile information" class="settings-section">
+        <h3>Profile</h3>
+        <form id="profile-form" autocomplete="off" novalidate>
+          <img src="" alt="Profile photo preview" id="profile-photo-preview" loading="lazy" />
+          <label for="profile-photo-input" style="cursor:pointer; color:#594885; font-weight:600;">Change Photo</label>
+          <input type="file" accept="image/*" id="profile-photo-input" style="display:none" aria-describedby="photo-desc" />
+          <div id="photo-desc" class="sr-only">
+            Upload a profile photo
+          </div>
+
+          <label for="profile-name">Full Name</label>
+          <input type="text" id="profile-name" name="profile-name" placeholder="Your full name" required aria-required="true" />
+
+          <label for="profile-birthdate">Date of Birth</label>
+          <input type="date" id="profile-birthdate" name="profile-birthdate" required aria-required="true" max="" />
+
+          <label for="profile-birthcity">City of Birth</label>
+          <input type="text" id="profile-birthcity" name="profile-birthcity" placeholder="Your birth city" />
+
+          <label for="profile-address">Full Address</label>
+          <textarea id="profile-address" name="profile-address" rows="2" placeholder="Your full address"></textarea>
+
+          <label for="profile-parents">Parents' Names</label>
+          <input type="text" id="profile-parents" name="profile-parents" placeholder="Parent names (e.g. Father & Mother)" />
+
+          <label for="profile-phone">Phone Number</label>
+          <input type="text" id="profile-phone" name="profile-phone" placeholder="e.g. 08123456789" inputmode="tel" pattern="[0-9+ ]*" />
+          <button type="submit" class="btn">Save Profile</button>
+        </form>
+      </section>
+
+      <section aria-label="School origin information" class="settings-section">
+        <h3>School Origin</h3>
+        <form id="school-form" autocomplete="off" novalidate>
+          <label for="school-name">School Name</label>
+          <input type="text" id="school-name" name="school-name" placeholder="Your previous school name" />
+
+          <label for="school-gradyear">Graduation Year</label>
+          <input type="number" id="school-gradyear" name="school-gradyear" min="1900" max="2099" placeholder="e.g. 2023" />
+
+          <button type="submit" class="btn">Save School Info</button>
+        </form>
+      </section>
+
+      <section aria-label="Change password" class="settings-section">
+        <h3>Change Password</h3>
+        <form id="change-password-form" autocomplete="off" novalidate>
+          <label for="old-password">Current Password</label>
+          <input type="password" id="old-password" name="old-password" placeholder="Current password" required aria-required="true" />
+          <label for="new-password">New Password</label>
+          <input type="password" id="new-password" name="new-password" placeholder="New password" required aria-required="true" />
+          <label for="confirm-password">Confirm New Password</label>
+          <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm new password" required aria-required="true" />
+          <button type="submit" class="btn">Save New Password</button>
+        </form>
+      </section>
+
+    </div>
+  </section>
+</div>
+
+<script>
+  (() => {
+    const app = document.getElementById('app');
+
+    // Elements
+    const viewLogin = document.getElementById('view-login');
+    const viewForgot = document.getElementById('view-forgot');
+    const viewMain = document.getElementById('view-main');
+
+    // Login form
+    const loginForm = document.getElementById('login-form');
+    const loginEmail = document.getElementById('login-email');
+    const loginPassword = document.getElementById('login-password');
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
+    const backToLoginBtn = document.getElementById('back-to-login');
+
+    // Main view elements
+    const logoutBtn = document.getElementById('logout-btn');
+    const navButtons = document.querySelectorAll('nav button.nav-btn');
+    const subpages = document.querySelectorAll('.subpage');
+
+    // Attendance
+    const attendanceBtn = document.getElementById('attendance-btn');
+
+    // Schedule list
+    const scheduleList = document.getElementById('schedule-list');
+
+    // Subjects list
+    const subjectList = document.getElementById('subject-list');
+
+    // Exams
+    const examSubjectsDiv = document.getElementById('exam-subjects');
+    const examContentDiv = document.getElementById('exam-content');
+    const examSubjectTitle = document.getElementById('exam-subject-title');
+    const examBackBtn = document.getElementById('exam-back-btn');
+
+    // Profile
+    const profileForm = document.getElementById('profile-form');
+    const profilePhotoInput = document.getElementById('profile-photo-input');
+    const profilePhotoPreview = document.getElementById('profile-photo-preview');
+    const profileName = document.getElementById('profile-name');
+    const profileBirthdate = document.getElementById('profile-birthdate');
+    const profileBirthcity = document.getElementById('profile-birthcity');
+    const profileAddress = document.getElementById('profile-address');
+    const profileParents = document.getElementById('profile-parents');
+    const profilePhone = document.getElementById('profile-phone');
+
+    // School origin
+    const schoolForm = document.getElementById('school-form');
+    const schoolName = document.getElementById('school-name');
+    const schoolGradYear = document.getElementById('school-gradyear');
+
+    // Change password
+    const changePasswordForm = document.getElementById('change-password-form');
+    const oldPassword = document.getElementById('old-password');
+    const newPassword = document.getElementById('new-password');
+    const confirmPassword = document.getElementById('confirm-password');
+
+    // Forgot password form
+    const forgotForm = document.getElementById('forgot-form');
+    const forgotEmail = document.getElementById('forgot-email');
+
+    // Constants
+    const STORAGE_KEY = 'elearning-user';
+    const USER_PROFILE_KEY = 'elearning-profile';
+    const USER_SCHOOL_KEY = 'elearning-school';
+    const USER_ATTENDANCE_KEY = 'elearning-attendance';
+    const USER_PASSWORD_KEY = 'elearning-password'; // Stored hashed (simple demo with base64, note insecure for real use!)
+
+    // Sample data for schedule and subjects
+    const sampleSchedule = [
+      { day: 'Monday', time: '08:00 - 09:30', subject: 'Mathematics' },
+      { day: 'Monday', time: '09:40 - 11:10', subject: 'English' },
+      { day: 'Tuesday', time: '08:00 - 09:30', subject: 'Science' },
+      { day: 'Tuesday', time: '09:40 - 11:10', subject: 'History' },
+      { day: 'Wednesday', time: '08:00 - 09:30', subject: 'Art' },
+      { day: 'Wednesday', time: '09:40 - 11:10', subject: 'Physical Education' },
+      { day: 'Thursday', time: '08:00 - 09:30', subject: 'Geography' },
+      { day: 'Thursday', time: '09:40 - 11:10', subject: 'Mathematics' },
+      { day: 'Friday', time: '08:00 - 09:30', subject: 'English' },
+      { day: 'Friday', time: '09:40 - 11:10', subject: 'Science' }
+    ];
+    const sampleSubjects = ['Mathematics', 'English', 'Science', 'History', 'Art', 'Physical Education', 'Geography'];
+
+    // Helper functions
+    function showView(view) {
+      [viewLogin, viewForgot, viewMain].forEach(v => {
+        v.hidden = (v !== view);
+      });
+    }
+
+    function showSubpage(target) {
+      subpages.forEach(sp => {
+        sp.hidden = (sp.id !== 'page-' + target);
+      });
+      navButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.target === target);
+        btn.setAttribute('aria-current', btn.dataset.target === target ? 'page' : 'false');
+      });
+    }
+
+    function saveUser(email, password) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ email }));
+      savePassword(password);
+    }
+    function loadUser() {
+      const userJson = localStorage.getItem(STORAGE_KEY);
+      return userJson ? JSON.parse(userJson) : null;
+    }
+    function savePassword(password) {
+      // For demo: encoding in base64, insecure, DO NOT use in real apps
+      localStorage.setItem(USER_PASSWORD_KEY, btoa(password));
+    }
+    function loadPassword() {
+      const pw = localStorage.getItem(USER_PASSWORD_KEY);
+      if (!pw) return null;
+      try { return atob(pw); } catch (e) { return null; }
+    }
+    function clearUser() {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(USER_PASSWORD_KEY);
+      localStorage.removeItem(USER_PROFILE_KEY);
+      localStorage.removeItem(USER_SCHOOL_KEY);
+      localStorage.removeItem(USER_ATTENDANCE_KEY);
+    }
+
+    function saveProfile(data) {
+      localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(data));
+    }
+    function loadProfile() {
+      const json = localStorage.getItem(USER_PROFILE_KEY);
+      return json ? JSON.parse(json) : {};
+    }
+
+    function saveSchool(data) {
+      localStorage.setItem(USER_SCHOOL_KEY, JSON.stringify(data));
+    }
+    function loadSchool() {
+      const json = localStorage.getItem(USER_SCHOOL_KEY);
+      return json ? JSON.parse(json) : {};
+    }
+
+    function saveAttendance(present) {
+      localStorage.setItem(USER_ATTENDANCE_KEY, JSON.stringify({ date: (new Date()).toDateString(), present }));
+    }
+    function loadAttendance() {
+      const json = localStorage.getItem(USER_ATTENDANCE_KEY);
+      if (!json) return { date: null, present: false };
+      try {
+        const obj = JSON.parse(json);
+        if (obj.date === (new Date()).toDateString()) {
+          return obj;
+        }
+        return { date: null, present: false };
+      } catch(e) {
+        return { date: null, present: false };
+      }
+    }
+
+    // Initial setup
+    function init() {
+      // Limit profile birthdate to today max
+      profileBirthdate.max = new Date().toISOString().split('T')[0];
+
+      // Populate schedule
+      scheduleList.innerHTML = '';
+      sampleSchedule.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'schedule-item';
+        div.textContent = `${item.day} | ${item.time}`;
+        const spanSubj = document.createElement('span');
+        spanSubj.textContent = item.subject;
+        div.appendChild(spanSubj);
+        scheduleList.appendChild(div);
+      });
+
+      // Populate subjects
+      subjectList.innerHTML = '';
+      sampleSubjects.forEach(subj => {
+        const btn = document.createElement('button');
+        btn.textContent = subj;
+        btn.type = 'button';
+        btn.addEventListener('click', () => {
+          alert('Opening subject: ' + subj + '\nThis is a demo. Content for ' + subj + ' would appear here.');
+        });
+        subjectList.appendChild(btn);
+      });
+
+      // Populate exam subjects list
+      examSubjectsDiv.innerHTML = '';
+      sampleSubjects.forEach(subj => {
+        const btn = document.createElement('button');
+        btn.textContent = subj;
+        btn.type = 'button';
+        btn.addEventListener('click', () => openExam(subj));
+        examSubjectsDiv.appendChild(btn);
+      });
+
+      // Load attendance state
+      updateAttendanceBtn();
+
+      // Load profile data
+      const profileData = loadProfile();
+      if (profileData.photo) profilePhotoPreview.src = profileData.photo;
+      profileName.value = profileData.name || '';
+      profileBirthdate.value = profileData.birthdate || '';
+      profileBirthcity.value = profileData.birthcity || '';
+      profileAddress.value = profileData.address || '';
+      profileParents.value = profileData.parents || '';
+      profilePhone.value = profileData.phone || '';
+
+      // Load school data
+      const schoolData = loadSchool();
+      schoolName.value = schoolData.name || '';
+      schoolGradYear.value = schoolData.gradYear || '';
+
+      // Clear password change fields
+      oldPassword.value = '';
+      newPassword.value = '';
+      confirmPassword.value = '';
+
+      // Show initial view based on auth
+      if (loadUser()) {
+        showLoggedIn();
+      } else {
+        showView(viewLogin);
+      }
+    }
+
+    // Attendance btn update
+    function updateAttendanceBtn() {
+      const att = loadAttendance();
+      if (att.present && att.date === (new Date()).toDateString()) {
+        attendanceBtn.textContent = 'You are marked PRESENT today ✓';
+        attendanceBtn.classList.add('present');
+        attendanceBtn.setAttribute('aria-pressed', 'true');
+        attendanceBtn.disabled = true;
+      } else {
+        attendanceBtn.textContent = 'Mark as Present';
+        attendanceBtn.classList.remove('present');
+        attendanceBtn.setAttribute('aria-pressed', 'false');
+        attendanceBtn.disabled = false;
+      }
+    }
+
+    // Navigation handling
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        showSubpage(btn.dataset.target);
+      });
+    });
+
+    // Login form submit
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const emailVal = loginEmail.value.trim().toLowerCase();
+      const pwVal = loginPassword.value;
+
+      if (!emailVal || !pwVal) {
+        alert('Please fill in both email and password.');
+        return;
+      }
+      const storedUser = loadUser();
+      const storedPassword = loadPassword();
+
+      if (storedUser && storedUser.email === emailVal && storedPassword === pwVal) {
+        showLoggedIn();
+        loginForm.reset();
+      } else if (!storedUser) {
+        // First-time register automatically
+        saveUser(emailVal, pwVal);
+        alert('Welcome new user! Your account is registered.');
+        showLoggedIn();
+        loginForm.reset();
+      } else {
+        alert('Invalid email or password. Please try again.');
+      }
+    });
+
+    // Forgot password link
+    forgotPasswordLink.addEventListener('click', () => {
+      showView(viewForgot);
+      forgotForm.reset();
+    });
+
+    // Back to login button
+    backToLoginBtn.addEventListener('click', () => {
+      showView(viewLogin);
+    });
+
+    // Forgot form submit
+    forgotForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const emailVal = forgotEmail.value.trim().toLowerCase();
+      if (!emailVal) {
+        alert('Please enter your email address.');
+        return;
+      }
+      // Mock reset password
+      alert('If this email is registered, a password reset link has been sent.');
+      forgotForm.reset();
+      showView(viewLogin);
+    });
+
+    // Logout button
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Do you want to log out?')) {
+        clearUser();
+        showView(viewLogin);
+      }
+    });
+
+    // Attendance button click
+    attendanceBtn.addEventListener('click', () => {
+      saveAttendance(true);
+      updateAttendanceBtn();
+      alert('Attendance for today has been recorded.');
+    });
+
+    // Exam functions
+    function openExam(subject) {
+      examSubjectsDiv.hidden = true;
+      examContentDiv.hidden = false;
+      examSubjectTitle.textContent = subject + ' Exam';
+    }
+    examBackBtn.addEventListener('click', () => {
+      examSubjectsDiv.hidden = false;
+      examContentDiv.hidden = true;
+    });
+
+    // Profile photo upload
+    profilePhotoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          profilePhotoPreview.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert('Please select a valid image file.');
+      }
+    });
+
+    // Profile form submit
+    profileForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = {
+        photo: profilePhotoPreview.src || '',
+        name: profileName.value.trim(),
+        birthdate: profileBirthdate.value,
+        birthcity: profileBirthcity.value.trim(),
+        address: profileAddress.value.trim(),
+        parents: profileParents.value.trim(),
+        phone: profilePhone.value.trim()
+      };
+      if (!data.name || !data.birthdate) {
+        alert('Please fill in required fields: name and date of birth.');
+        return;
+      }
+      saveProfile(data);
+      alert('Profile saved successfully.');
+    });
+
+    // School form submit
+    schoolForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = {
+        name: schoolName.value.trim(),
+        gradYear: schoolGradYear.value.trim()
+      };
+      saveSchool(data);
+      alert('School information saved successfully.');
+    });
+
+    // Change password form submit
+    changePasswordForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const oldPwVal = oldPassword.value;
+      const newPwVal = newPassword.value;
+      const confirmPwVal = confirmPassword.value;
+      if (!oldPwVal || !newPwVal || !confirmPwVal) {
+        alert('Please fill in all password fields.');
+        return;
+      }
+      const currentStoredPw = loadPassword();
+      if (oldPwVal !== currentStoredPw) {
+        alert('Current password is incorrect.');
+        return;
+      }
+      if (newPwVal !== confirmPwVal) {
+        alert('New password and confirmation do not match.');
+        return;
+      }
+      if (newPwVal.length < 6) {
+        alert('New password should be at least 6 characters.');
+        return;
+      }
+      savePassword(newPwVal);
+      alert('Password changed successfully.');
+      oldPassword.value = '';
+      newPassword.value = '';
+      confirmPassword.value = '';
+    });
+
+    // Show logged in interface
+    function showLoggedIn() {
+      showView(viewMain);
+      showSubpage('dashboard');
+    }
+
+    // Initialize app on load
+    window.addEventListener('load', () => {
+      init();
+    });
+
+  })();
+</script>
+
+</body>
+</html>
+

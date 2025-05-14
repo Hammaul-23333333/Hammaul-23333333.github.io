@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>E-Learning Siswa & Guru</title>
+<style>
+  /* Reset & basic */
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  body {
+    background: #f4f7fb;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+  #app {
+    width: 100%;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgb(0 0 0 / 0.1);
+    overflow: hidden;
+  }
+  header {
+    background: #4a90e2;
+    color: white;
+    padding: 18px 30px;
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-align: center;
+  }
+  main {
+    padding: 20px 30px 40px;
+    max-height: 650px;
+    overflow-y: auto;
+  }
+
+  /* Login/Register Page */
+  .login-container, .forgot-password-container {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  h2 {
+    margin-bottom: 18px;
+    color: #333;
+    text-align: center;
+  }
+  form {
+    margin-top: 10px;
+  }
+  label {
+    display: block;
+    margin-bottom: 6px;
+    color: #555;
+    font-weight: 600;
+  }
+  input[type="email"], input[type="password"], input[type="text"], input[type="date"], input[type="file"], select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1.8px solid #ccc;
+    margin-bottom: 16px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus, input[type="date"]:focus, select:focus {
+    border-color: #4a90e2;
+    outline: none;
+  }
+  button {
+    width: 100%;
+    background: #4a90e2;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 12px 0;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background: #3b79ca;
+  }
+  .role-select {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 10px;
+  }
+  .role-select label {
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .link-btn {
+    background: none;
+    border: none;
+    color: #4a90e2;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: -12px;
+    margin-bottom: 20px;
+    display: block;
+    text-align: right;
+  }
+  .link-btn:hover {
+    text-decoration: underline;
+  }
+  .error-msg {
+    color: #d93025;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .success-msg {
+    color: #2e7d32;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .profile-photo-preview {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #4a90e2;
+    margin-bottom: 12px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Dashboard */
+  .nav-tabs {
+    display: flex;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 24px;
+  }
+  .nav-tab {
+    flex-grow: 1;
+    text-align: center;
+    padding: 12px 0;
+    cursor: pointer;
+    font-weight: 600;
+    color: #4a90e2;
+    border-bottom: 4px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .nav-tab.active {
+    border-bottom: 4px solid #4a90e2;
+    font-weight: 700;
+    color: #1c5bbf;
+  }
+  section {
+    display: none;
+  }
+  section.active {
+    display: block;
+  }
+  .dashboard-header {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #222;
+  }
+
+  /* Schedule & Subjects Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  thead tr {
+    background-color: #4a90e2;
+    color: white;
+    font-weight: 700;
+  }
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  tbody tr:nth-child(even) {
+    background: #f9fafe;
+  }
+  tbody tr:hover {
+    background: #e3f0fd;
+  }
+  button.small-btn {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+  }
+
+  /* Attendance Section */
+  .attendance-list {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+  .attendance-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+  }
+  .attendance-item span {
+    font-weight: 600;
+    color: #555;
+  }
+
+  /* Exams Section */
+  .exam-question {
+    margin-bottom: 15px;
+  }
+  .exam-question label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .exam-question input[type="radio"] {
+    margin-right: 12px;
+  }
+  .exam-submit {
+    text-align: center;
+  }
+  .exam-result {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-top: 12px;
+    color: #2e7d32;
+  }
+
+  /* Profile Form */
+  .profile-form {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .profile-form label {
+    font-weight: 600;
+    margin-top: 12px;
+  }
+  .profile-form input[type="file"] {
+    padding: 4px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>E-Learning Siswa & Guru</header>
+  <main>
+    <!-- Login Screen -->
+    <div id="login-screen">
+      <div class="login-container">
+        <h2>Masuk Akun</h2>
+        <div class="role-select" aria-label="Pilih peran">
+          <label><input type="radio" name="role" value="student" checked /> Siswa</label>
+          <label><input type="radio" name="role" value="teacher" /> Guru</label>
+        </div>
+        <form id="login-form">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" required placeholder="email@example.com" autocomplete="username" />
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" required placeholder="password" autocomplete="current-password" />
+          <button type="submit">Masuk</button>
+        </form>
+        <button class="link-btn" id="btn-forgot-password">Lupa Password?</button>
+        <div class="error-msg" id="login-error"></div>
+      </div>
+    </div>
+
+    <!-- Forgot Password -->
+    <div id="forgot-password-screen" style="display:none;">
+      <div class="forgot-password-container">
+        <h2>Lupa Password</h2>
+        <form id="forgot-password-form">
+          <label for="forgot-email">Masukkan email terdaftar</label>
+          <input type="email" id="forgot-email" required placeholder="email@example.com" />
+          <button type="submit">Reset Password</button>
+        </form>
+        <button class="link-btn" id="btn-back-login">Kembali ke Login</button>
+        <div class="error-msg" id="forgot-error"></div>
+        <div class="success-msg" id="forgot-success"></div>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" style="display:none;">
+      <nav class="nav-tabs">
+        <div class="nav-tab active" data-tab="schedule">Jadwal Hari Ini</div>
+        <div class="nav-tab" data-tab="attendance">Kehadiran</div>
+        <div class="nav-tab" data-tab="subjects">Mata Pelajaran</div>
+        <div class="nav-tab" data-tab="exams">Ujian Semester</div>
+        <div class="nav-tab" data-tab="profile">Pengaturan</div>
+        <div class="nav-tab" id="logout-tab">Logout</div>
+      </nav>
+
+      <!-- Jadwal Hari Ini -->
+      <section id="schedule" class="active">
+        <div class="dashboard-header">Jadwal Pelajaran Hari Ini</div>
+        <table id="schedule-table" aria-label="Jadwal Pelajaran Hari Ini">
+          <thead>
+            <tr><th>No</th><th>Mata Pelajaran</th><th>Waktu</th><th>Aksi</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div id="schedule-no-data" style="text-align:center; color:#888;">Tidak ada jadwal untuk hari ini.</div>
+      </section>
+
+      <!-- Kehadiran -->
+      <section id="attendance">
+        <div class="dashboard-header">Kehadiran</div>
+        <div id="attendance-student" style="display:none;">
+          <button id="btn-mark-attendance" class="small-btn">Absen Masuk Hari Ini</button>
+          <div id="attendance-student-msg" style="margin-top:10px;"></div>
+        </div>
+        <div id="attendance-teacher" style="display:none;">
+          <div id="attendance-records"></div>
+        </div>
+      </section>
+
+      <!-- Mata Pelajaran -->
+      <section id="subjects">
+        <div class="dashboard-header">Jadwal Mata Pelajaran</div>
+        <table id="subjects-table" aria-label="Jadwal Mata Pelajaran">
+          <thead>
+            <tr><th>No</th><th>Mata Pelajaran</th><th>Hari</th><th>Waktu</th><th>Kelas</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div id="subjects-no-data" style="text-align:center; color:#888;">Tidak ada data mata pelajaran.</div>
+      </section>
+
+      <!-- Ujian Semester -->
+      <section id="exams">
+        <div class="dashboard-header">Ujian Semester</div>
+        <div id="exams-student" style="display:none;">
+          <div id="exam-form-container"></div>
+          <div id="exam-result-container"></div>
+        </div>
+        <div id="exams-teacher" style="display:none;">
+          <div id="exam-results-list"></div>
+        </div>
+      </section>
+
+      <!-- Pengaturan -->
+      <section id="profile">
+        <div class="dashboard-header">Pengaturan Profil</div>
+        <form id="profile-form" class="profile-form">
+          <img src="" alt="Foto Profil" id="profile-photo-preview" class="profile-photo-preview" />
+          <label for="profile-photo">Ubah Foto Profil</label>
+          <input type="file" id="profile-photo" accept="image/*" />
+          <label for="profile-name">Nama Lengkap</label>
+          <input type="text" id="profile-name" required />
+          <label for="profile-dob">Tanggal Lahir</label>
+          <input type="date" id="profile-dob" required />
+          <label for="profile-city">Kota Kelahiran</label>
+          <input type="text" id="profile-city" required />
+          <label for="profile-address">Alamat</label>
+          <input type="text" id="profile-address" required />
+          <label for="profile-postalcode">Kode Pos</label>
+          <input type="text" id="profile-postalcode" required />
+          <label for="profile-email">Email</label>
+          <input type="email" id="profile-email" required />
+          <label for="profile-password">Ganti Password</label>
+          <input type="password" id="profile-password" placeholder="Isi jika ingin ganti password" />
+          <button type="submit">Simpan Perubahan</button>
+          <div id="profile-msg" style="margin-top:12px;"></div>
+        </form>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+(() => {
+  // Constants
+  const DAYS = ['minggu', 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'];
+
+  // Elements
+  const loginScreen = document.getElementById('login-screen');
+  const forgotPasswordScreen = document.getElementById('forgot-password-screen');
+  const dashboard = document.getElementById('dashboard');
+
+  const loginForm = document.getElementById('login-form');
+  const loginError = document.getElementById('login-error');
+  const btnForgotPassword = document.getElementById('btn-forgot-password');
+  const btnBackLogin = document.getElementById('btn-back-login');
+  const forgotPasswordForm = document.getElementById('forgot-password-form');
+  const forgotError = document.getElementById('forgot-error');
+  const forgotSuccess = document.getElementById('forgot-success');
+
+  const navTabs = document.querySelectorAll('.nav-tab');
+  const scheduleTab = document.querySelector('.nav-tab[data-tab="schedule"]');
+  const attendanceTab = document.querySelector('.nav-tab[data-tab="attendance"]');
+  const subjectsTab = document.querySelector('.nav-tab[data-tab="subjects"]');
+  const examsTab = document.querySelector('.nav-tab[data-tab="exams"]');
+  const profileTab = document.querySelector('.nav-tab[data-tab="profile"]');
+  const logoutTab = document.getElementById('logout-tab');
+
+  const sections = {
+    schedule: document.getElementById('schedule'),
+    attendance: document.getElementById('attendance'),
+    subjects: document.getElementById('subjects'),
+    exams: document.getElementById('exams'),
+    profile: document.getElementById('profile')
+  };
+
+  const scheduleTableBody = document.querySelector('#schedule-table tbody');
+  const scheduleNoData = document.getElementById('schedule-no-data');
+
+  const attendanceStudentDiv = document.getElementById('attendance-student');
+  const attendanceTeacherDiv = document.getElementById('attendance-teacher');
+  const btnMarkAttendance = document.getElementById('btn-mark-attendance');
+  const attendanceStudentMsg = document.getElementById('attendance-student-msg');
+  const attendanceRecordsDiv = document.getElementById('attendance-records');
+
+  const subjectsTableBody = document.querySelector('#subjects-table tbody');
+  const subjectsNoData = document.getElementById('subjects-no-data');
+
+  const examsStudentDiv = document.getElementById('exams-student');
+  const examsTeacherDiv = document.getElementById('exams-teacher');
+  const examFormContainer = document.getElementById('exam-form-container');
+  const examResultContainer = document.getElementById('exam-result-container');
+  const examResultsList = document.getElementById('exam-results-list');
+
+  const profileForm = document.getElementById('profile-form');
+  const profilePhotoInput = document.getElementById('profile-photo');
+  const profilePhotoPreview = document.getElementById('profile-photo-preview');
+  const profileNameInput = document.getElementById('profile-name');
+  const profileDobInput = document.getElementById('profile-dob');
+  const profileCityInput = document.getElementById('profile-city');
+  const profileAddressInput = document.getElementById('profile-address');
+  const profilePostalCodeInput = document.getElementById('profile-postalcode');
+  const profileEmailInput = document.getElementById('profile-email');
+  const profilePasswordInput = document.getElementById('profile-password');
+  const profileMsg = document.getElementById('profile-msg');
+
+  // Utility Functions
+
+  // localStorage keys
+  const LS_USERS = 'elearning_users';
+  const LS_LOGGED_USER = 'elearning_logged_user';
+  const LS_ATTENDANCE = 'elearning_attendance_records';
+  const LS_EXAM_RESULTS = 'elearning_exam_results';
+
+  function saveData(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+  function loadData(key) {
+    const val = localStorage.getItem(key);
+    if(!val) return null;
+    try {
+      return JSON.parse(val);
+    } catch {
+      return null;
+    }
+  }
+
+  // Generate some default users and data if none exists
+  function initDefaultData() {
+    let users = loadData(LS_USERS);
+    if(!users) {
+      users = [
+        // teachers
+        {id: 't1', email: 'guru1@example.com', password: 'guru123', role: 'teacher', name: 'Budi Santoso', dob: '1980-05-10', city: 'Jakarta', address:'Jl. Merdeka No. 10', postalcode: '10110', photo:'', classes: ['10A', '10B']},
+        // students
+        {id: 's1', email: 'siswa1@example.com', password: 'siswa123', role: 'student', name: 'Ani Wijaya', dob: '2006-09-15', city: 'Bandung', address:'Jl. Mawar No.5', postalcode: '40123', photo:'', class: '10A'},
+        {id: 's2', email: 'siswa2@example.com', password: 'siswa123', role: 'student', name: 'Eko Prasetyo', dob: '2006-11-02', city: 'Bandung', address:'Jl. Melati No.11', postalcode: '40124', photo:'', class: '10B'}
+      ];
+      saveData(LS_USERS, users);
+    }
+
+    if(loadData(LS_ATTENDANCE) === null) saveData(LS_ATTENDANCE, []);
+    if(loadData(LS_EXAM_RESULTS) === null) saveData(LS_EXAM_RESULTS, []);
+  }
+
+  // Find user by email and role
+  function findUser(email, role) {
+    const users = loadData(LS_USERS) || [];
+    return users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.role === role);
+  }
+
+  // Update user in storage
+  function updateUser(updatedUser) {
+    let users = loadData(LS_USERS) || [];
+    users = users.map(u => u.id === updatedUser.id ? updatedUser : u);
+    saveData(LS_USERS, users);
+  }
+
+  // Logged user info
+  let loggedUser = null;
+
+  // Show and hide screens
+  function showScreen(screenId) {
+    loginScreen.style.display = 'none';
+    forgotPasswordScreen.style.display = 'none';
+    dashboard.style.display = 'none';
+
+    if(screenId === 'login') loginScreen.style.display = 'block';
+    else if(screenId === 'forgot') forgotPasswordScreen.style.display = 'block';
+    else if(screenId === 'dashboard') dashboard.style.display = 'block';
+  }
+
+  // Format date to YYYY-MM-DD
+  function formatDate(d) {
+    return d.toISOString().slice(0,10);
+  }
+  // Format datetime for display
+  function formatDateTime(d) {
+    return d.toLocaleString('id-ID', { dateStyle:'medium', timeStyle:'short' });
+  }
+
+  // Schedule data sample
+  // Each subject: {id, name, dayOfWeek(0-6), startTime, endTime, class (for students and teachers)}
+  // time is in 'HH:mm' 24h format
+  const schedules = [
+    // For class 10A
+    {id: 'sub1', name: 'Matematika', dayOfWeek: 1, startTime: '08:00', endTime: '09:40', class: '10A'},
+    {id: 'sub2', name: 'Bahasa Indonesia', dayOfWeek: 1, startTime: '10:00', endTime: '11:30', class: '10A'},
+    {id: 'sub3', name: 'Fisika', dayOfWeek: 3, startTime: '08:00', endTime: '09:40', class: '10A'},
+    {id: 'sub4', name: 'Sejarah', dayOfWeek: 4, startTime: '10:00', endTime: '11:30', class: '10A'},
+
+    // For class 10B
+    {id: 'sub5', name: 'Matematika', dayOfWeek: 1, startTime: '08:00', endTime: '09:40', class: '10B'},
+    {id: 'sub6', name: 'Bahasa Inggris', dayOfWeek: 2, startTime: '10:00', endTime: '11:30', class: '10B'},
+    {id: 'sub7', name: 'Kimia', dayOfWeek: 3, startTime: '10:00', endTime: '11:30', class: '10B'},
+    {id: 'sub8', name: 'Seni Budaya', dayOfWeek: 5, startTime: '08:00', endTime: '09:40', class: '10B'}
+  ];
+
+  // Semester exam questions sample (simplified for demo)
+  // Exams linked by class
+  const examQuestions = {
+    '10A': [
+      {
+        question: 'Apa ibukota Indonesia?',
+        choices: ['Jakarta', 'Bandung', 'Surabaya', 'Medan'],
+        answer: 'Jakarta'
+      },
+      {
+        question: 'Berapa hasil dari 7 x 8?',
+        choices: ['54', '56', '64', '58'],
+        answer: '56'
+      }
+    ],
+    '10B': [
+      {
+        question: 'Who wrote "Romeo and Juliet"?',
+        choices: ['Charles Dickens', 'William Shakespeare', 'Mark Twain', 'Ernest Hemingway'],
+        answer: 'William Shakespeare'
+      },
+      {
+        question: 'What is the chemical symbol for water?',
+        choices: ['H2O', 'CO2', 'O2', 'N2'],
+        answer: 'H2O'
+      }
+    ]
+  };
+
+  // Utility: get current logged user class or classes (for teachers it's array, for students it's string)
+  function getUserClasses(user) {
+    if(user.role === 'student') return [user.class];
+    else if(user.role === 'teacher') return user.classes || [];
+    else return [];
+  }
+
+  // UI and Logic
+
+  // Handle login
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    loginError.textContent = '';
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+    const role = document.querySelector('input[name="role"]:checked').value;
+
+    if(!email || !password) {
+      loginError.textContent = 'Email dan password harus diisi!';
+      return;
+    }
+
+    const user = findUser(email, role);
+    if(!user) {
+      loginError.textContent = 'Akun tidak ditemukan.';
+      return;
+    }
+    if(user.password !== password) {
+      loginError.textContent = 'Password salah.';
+      return;
+    }
+    loggedUser = user;
+    loginForm.reset();
+    loadDashboard();
+    showScreen('dashboard');
+  });
+
+  // Forgot password screen show/hide
+  btnForgotPassword.addEventListener('click', () => {
+    loginError.textContent = '';
+    forgotError.textContent = '';
+    forgotSuccess.textContent = '';
+    forgotPasswordForm.reset();
+    showScreen('forgot');
+  });
+
+  btnBackLogin.addEventListener('click', () => {
+    forgotError.textContent = '';
+    forgotSuccess.textContent = '';
+    showScreen('login');
+  });
+
+  // Handle forgot password form submit
+  forgotPasswordForm.addEventListener('submit', e => {
+    e.preventDefault();
+    forgotError.textContent = '';
+    forgotSuccess.textContent = '';
+    const email = document.getElementById('forgot-email').value.trim();
+
+    if(!email) {
+      forgotError.textContent = 'Email harus diisi.';
+      return;
+    }
+    const users = loadData(LS_USERS) || [];
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if(!user) {
+      forgotError.textContent = 'Email tidak terdaftar.';
+      return;
+    }
+    // For demo, we simply reset password to 'password123' and show success message
+    user.password = 'password123';
+    updateUser(user);
+    forgotSuccess.textContent = 'Password telah direset menjadi "password123". Silakan login kembali.';
+    forgotPasswordForm.reset();
+  });
+
+  // Navigation tabs click
+  navTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      if(tab.id === 'logout-tab') {
+        logout();
+        return;
+      }
+      navTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      showSection(tab.getAttribute('data-tab'));
+    });
+  });
+
+  function showSection(tabName) {
+    for(let key in sections) {
+      sections[key].classList.remove('active');
+    }
+    if(sections[tabName]) {
+      sections[tabName].classList.add('active');
+    }
+  }
+
+  // Logout
+  function logout() {
+    loggedUser = null;
+    showScreen('login');
+  }
+
+  // Load dashboard content after login
+  function loadDashboard() {
+    // Clear previous data
+    scheduleTableBody.innerHTML = '';
+    attendanceStudentMsg.textContent = '';
+    attendanceRecordsDiv.innerHTML = '';
+    subjectsTableBody.innerHTML = '';
+    examFormContainer.innerHTML = '';
+    examResultContainer.innerHTML = '';
+    examResultsList.innerHTML = '';
+    profileMsg.textContent = '';
+
+    // Show/hide sections based on role
+    if(loggedUser.role === 'student') {
+      attendanceStudentDiv.style.display = 'block';
+      attendanceTeacherDiv.style.display = 'none';
+      examsStudentDiv.style.display = 'block';
+      examsTeacherDiv.style.display = 'none';
+    } else if(loggedUser.role === 'teacher') {
+      attendanceStudentDiv.style.display = 'none';
+      attendanceTeacherDiv.style.display = 'block';
+      examsStudentDiv.style.display = 'none';
+      examsTeacherDiv.style.display = 'block';
+    }
+
+    // Populate schedule for Today
+    renderTodaySchedule();
+
+    // Populate full subjects list based on user
+    renderSubjects();
+
+    // Load attendance if teacher
+    if(loggedUser.role === 'teacher') {
+      renderAttendanceRecords();
+    }
+
+    // Load exams (student or teacher)
+    if(loggedUser.role === 'student') {
+      renderStudentExamForm();
+    } else if(loggedUser.role === 'teacher') {
+      renderTeacherExamResults();
+    }
+
+    // Load profile form data
+    loadProfileData();
+
+    // Save currently logged user in localStorage for persistence
+    localStorage.setItem(LS_LOGGED_USER, JSON.stringify(loggedUser));
+  }
+
+  // Load logged in user from localStorage on page load
+  function loadLoggedUser() {
+    const data = localStorage.getItem(LS_LOGGED_USER);
+    if(data) {
+      try {
+        loggedUser = JSON.parse(data);
+        loadDashboard();
+        showScreen('dashboard');
+      } catch {
+        loggedUser = null;
+        showScreen('login');
+      }
+    }
+  }
+
+  // Render today's schedule for logged user classes
+  function renderTodaySchedule() {
+    const todayDayIndex = new Date().getDay(); // 0-6 start Sunday
+    const userClasses = getUserClasses(loggedUser);
+    scheduleTableBody.innerHTML = '';
+
+    const filtered = schedules.filter(s => s.dayOfWeek === todayDayIndex && userClasses.includes(s.class));
+    if(filtered.length === 0) {
+      scheduleNoData.style.display = 'block';
+      return;
+    }
+    scheduleNoData.style.display = 'none';
+
+    filtered.forEach((subj, idx) => {
+      let tr = document.createElement('tr');
+
+      let tdNo = document.createElement('td');
+      tdNo.textContent = (idx+1);
+      let tdName = document.createElement('td');
+      tdName.textContent = subj.name;
+      let tdTime = document.createElement('td');
+      tdTime.textContent = subj.startTime + ' - ' + subj.endTime;
+      let tdAction = document.createElement('td');
+
+      if(loggedUser.role === 'student') {
+        let btnJoin = document.createElement('button');
+        btnJoin.textContent = 'Ikuti';
+        btnJoin.classList.add('small-btn');
+        btnJoin.addEventListener('click', () => {
+          alert('Mengikuti mata pelajaran "'+subj.name+'" hari ini.');
+        });
+        tdAction.appendChild(btnJoin);
+      } else {
+        tdAction.textContent = '-';
+      }
+
+      tr.appendChild(tdNo);
+      tr.appendChild(tdName);
+      tr.appendChild(tdTime);
+      tr.appendChild(tdAction);
+      scheduleTableBody.appendChild(tr);
+    });
+  }
+
+  // Attendance feature
+  btnMarkAttendance.addEventListener('click', () => {
+    const todayDate = formatDate(new Date());
+    let attendanceRecords = loadData(LS_ATTENDANCE) || [];
+
+    // Check if already marked today by student
+    const alreadyMarked = attendanceRecords.find(att =>
+      att.userId === loggedUser.id && att.date === todayDate
+    );
+    if(alreadyMarked) {
+      attendanceStudentMsg.style.color = '#d93025';
+      attendanceStudentMsg.textContent = 'Anda sudah melakukan absen hari ini.';
+      return;
+    }
+
+    attendanceRecords.push({
+      userId: loggedUser.id,
+      name: loggedUser.name,
+      date: todayDate,
+      time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'}),
+      class: loggedUser.class
+    });
+    saveData(LS_ATTENDANCE, attendanceRecords);
+
+    attendanceStudentMsg.style.color = '#2e7d32';
+    attendanceStudentMsg.textContent = 'Absensi berhasil dicatat. Terima kasih!';
+  });
+
+  // Teacher renders attendance records filtered by classes they teach
+  function renderAttendanceRecords() {
+    let attendanceRecords = loadData(LS_ATTENDANCE) || [];
+    const teacherClasses = getUserClasses(loggedUser);
+    if(attendanceRecords.length === 0) {
+      attendanceRecordsDiv.innerHTML = '<p>Tidak ada data kehadiran.</p>';
+      return;
+    }
+    // Filter by teacher classes
+    attendanceRecords = attendanceRecords.filter(a => teacherClasses.includes(a.class));
+    if(attendanceRecords.length === 0) {
+      attendanceRecordsDiv.innerHTML = '<p>Tidak ada data kehadiran untuk kelas Anda.</p>';
+      return;
+    }
+
+    let html = `<table aria-label="Rekap Absensi Siswa"><thead><tr>
+                <th>No</th><th>Nama Siswa</th><th>Kelas</th><th>Tanggal</th><th>Waktu</th></tr></thead><tbody>`;
+    attendanceRecords.forEach((a,i) => {
+      html += `<tr><td>${i+1}</td><td>${a.name}</td><td>${a.class}</td><td>${a.date}</td><td>${a.time}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    attendanceRecordsDiv.innerHTML = html;
+  }
+
+  // Render full subjects list per user role/classes
+  function renderSubjects() {
+    const userClasses = getUserClasses(loggedUser);
+    subjectsTableBody.innerHTML = '';
+    let filtered = schedules.filter(s => userClasses.includes(s.class));
+    if(filtered.length === 0) {
+      subjectsNoData.style.display = 'block';
+      return;
+    }
+    subjectsNoData.style.display = 'none';
+
+    filtered.forEach((subj, idx) => {
+      let tr = document.createElement('tr');
+
+      let tdNo = document.createElement('td');
+      tdNo.textContent = idx+1;
+      let tdName = document.createElement('td');
+      tdName.textContent = subj.name;
+      let tdDay = document.createElement('td');
+      tdDay.textContent = DAYS[subj.dayOfWeek].charAt(0).toUpperCase() + DAYS[subj.dayOfWeek].slice(1);
+      let tdTime = document.createElement('td');
+      tdTime.textContent = subj.startTime + ' - ' + subj.endTime;
+      let tdClass = document.createElement('td');
+      tdClass.textContent = subj.class;
+
+      tr.appendChild(tdNo);
+      tr.appendChild(tdName);
+      tr.appendChild(tdDay);
+      tr.appendChild(tdTime);
+      tr.appendChild(tdClass);
+      subjectsTableBody.appendChild(tr);
+    });
+  }
+
+  // Exams for students - render form, and results if taken
+  function renderStudentExamForm() {
+    const classQuestions = examQuestions[loggedUser.class] || [];
+    examFormContainer.innerHTML = '';
+    examResultContainer.innerHTML = '';
+
+    if(classQuestions.length === 0) {
+      examFormContainer.innerHTML = '<p>Tidak ada ujian untuk kelas Anda saat ini.</p>';
+      return;
+    }
+
+    // Check if student already took exam
+    let examResults = loadData(LS_EXAM_RESULTS) || [];
+    let studentResult = examResults.find(er => er.userId === loggedUser.id);
+
+    if(studentResult) {
+      // Show result summary
+      examResultContainer.innerHTML = `<p><strong>Anda telah menyelesaikan ujian ini.</strong></p>
+        <p>Nilai: <strong>${studentResult.score} / ${classQuestions.length}</strong></p>`;
+      return;
+    }
+
+    // Render exam form
+    let form = document.createElement('form');
+    form.id = 'exam-form';
+
+    classQuestions.forEach((q, idx) => {
+      let div = document.createElement('div');
+      div.classList.add('exam-question');
+
+      let label = document.createElement('label');
+      label.textContent = `${idx+1}. ${q.question}`;
+      div.appendChild(label);
+
+      q.choices.forEach(choice => {
+        let choiceId = `q${idx}_choice_${choice}`;
+        let input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q'+idx;
+        input.id = choiceId;
+        input.value = choice;
+        div.appendChild(input);
+
+        let choiceLabel = document.createElement('label');
+        choiceLabel.htmlFor = choiceId;
+        choiceLabel.textContent = choice;
+        choiceLabel.style.marginRight = '15px';
+        div.appendChild(choiceLabel);
+      });
+
+      form.appendChild(div);
+    });
+
+    let submitDiv = document.createElement('div');
+    submitDiv.classList.add('exam-submit');
+    let submitBtn = document.createElement('button');
+    submitBtn.type = 'submit';
+    submitBtn.textContent = 'Kirim Jawaban';
+    submitDiv.appendChild(submitBtn);
+
+    form.appendChild(submitDiv);
+    examFormContainer.appendChild(form);
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let correctCount = 0;
+      let answers = [];
+      for(let i=0; i<classQuestions.length; i++) {
+        let selected = form['q'+i].value;
+        if(!selected) {
+          alert('Harap menjawab semua pertanyaan.');
+          return;
+        }
+        answers.push(selected);
+        if(selected === classQuestions[i].answer) correctCount++;
+      }
+
+      let examResults = loadData(LS_EXAM_RESULTS) || [];
+      examResults.push({
+        userId: loggedUser.id,
+        name: loggedUser.name,
+        class: loggedUser.class,
+        score: correctCount,
+        total: classQuestions.length,
+        date: formatDate(new Date())
+      });
+      saveData(LS_EXAM_RESULTS, examResults);
+      examFormContainer.innerHTML = '';
+      examResultContainer.innerHTML = `<p><strong>Terima kasih telah menyelesaikan ujian.</strong></p>
+        <p>Nilai Anda: <strong>${correctCount} / ${classQuestions.length}</strong></p>`;
+      // refresh teacher exam data
+      if(loggedUser.role === 'teacher') renderTeacherExamResults();
+    });
+  }
+
+  // Exams for teachers - list all exam results by classes taught
+  function renderTeacherExamResults() {
+    let examResults = loadData(LS_EXAM_RESULTS) || [];
+    const teacherClasses = getUserClasses(loggedUser);
+
+    let filteredResults = examResults.filter(er => teacherClasses.includes(er.class));
+    if(filteredResults.length === 0) {
+      examResultsList.innerHTML = '<p>Tidak ada hasil ujian untuk kelas Anda.</p>';
+      return;
+    }
+
+    let html = `<table aria-label="Hasil Ujian Siswa">
+      <thead><tr>
+      <th>No</th><th>Nama Siswa</th><th>Kelas</th><th>Nilai</th><th>Tanggal</th></tr></thead><tbody>`;
+    filteredResults.forEach((res, i) => {
+      html += `<tr><td>${i+1}</td><td>${res.name}</td><td>${res.class}</td><td>${res.score} / ${res.total}</td><td>${res.date}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    examResultsList.innerHTML = html;
+  }
+
+  // Load profile data into form
+  function loadProfileData() {
+    profilePhotoPreview.src = loggedUser.photo || 'https://via.placeholder.com/120?text=Foto';
+    profileNameInput.value = loggedUser.name || '';
+    profileDobInput.value = loggedUser.dob || '';
+    profileCityInput.value = loggedUser.city || '';
+    profileAddressInput.value = loggedUser.address || '';
+    profilePostalCodeInput.value = loggedUser.postalcode || '';
+    profileEmailInput.value = loggedUser.email || '';
+    profilePasswordInput.value = '';
+    profileMsg.textContent = '';
+    profileMsg.style.color = 'initial';
+  }
+
+  // Handle profile photo preview on file select
+  profilePhotoInput.addEventListener('change', e => {
+    const file = profilePhotoInput.files[0];
+    if(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        profilePhotoPreview.src = reader.result;
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Handle profile form submit to save changes
+  profileForm.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const newName = profileNameInput.value.trim();
+    const newDob = profileDobInput.value;
+    const newCity = profileCityInput.value.trim();
+    const newAddress = profileAddressInput.value.trim();
+    const newPostal = profilePostalCodeInput.value.trim();
+    const newEmail = profileEmailInput.value.trim();
+    const newPassword = profilePasswordInput.value;
+
+    // Validate email uniqueness if changed
+    if(newEmail.toLowerCase() !== loggedUser.email.toLowerCase()) {
+      const existingUser = findUser(newEmail, loggedUser.role);
+      if(existingUser) {
+        profileMsg.style.color = '#d93025';
+        profileMsg.textContent = 'Email sudah digunakan oleh akun lain.';
+        return;
+      }
+    }
+
+    // Update photo if changed
+    if(profilePhotoInput.files.length > 0) {
+      const file = profilePhotoInput.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        loggedUser.photo = reader.result;
+        saveProfileData();
+      }
+      reader.readAsDataURL(file);
+    } else {
+      saveProfileData();
+    }
+
+    function saveProfileData() {
+      // Update other fields
+      loggedUser.name = newName;
+      loggedUser.dob = newDob;
+      loggedUser.city = newCity;
+      loggedUser.address = newAddress;
+      loggedUser.postalcode = newPostal;
+      loggedUser.email = newEmail;
+      if(newPassword.trim() !== '') {
+        loggedUser.password = newPassword;
+      }
+      updateUser(loggedUser);
+      localStorage.setItem(LS_LOGGED_USER, JSON.stringify(loggedUser));
+      profileMsg.style.color = '#2e7d32';
+      profileMsg.textContent = 'Profil berhasil disimpan.';
+      profilePasswordInput.value = '';
+      profileForm.reset();
+      // reload profile photo preview and inputs after reset
+      loadProfileData();
+    }
+  });
+
+  // Initialize default users and data on startup
+  initDefaultData();
+
+  // Load logged user session if exists
+  loadLoggedUser();
+
+  // Start at login screen if no logged user
+  if(!loggedUser) showScreen('login');
+
+})();
+</script>
+</body>
+</html>
+

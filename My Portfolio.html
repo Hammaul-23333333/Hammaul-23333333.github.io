@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>My Portfolio</title>
+<style>
+  /* Reset & base */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #eee;
+    line-height: 1.6;
+  }
+  a {
+    color: #00b7ff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  a:hover {
+    color: #ff6f61;
+  }
+
+  /* Container */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    padding: 60px 20px 40px;
+  }
+  header h1 {
+    font-size: 3.5rem;
+    margin-bottom: 0.3em;
+    letter-spacing: 2px;
+    color: #00b7ff;
+  }
+  header p {
+    font-size: 1.3rem;
+    color: #bbb;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Section headings */
+  section {
+    margin-bottom: 60px;
+  }
+  section h2 {
+    font-size: 2rem;
+    border-bottom: 3px solid #00b7ff;
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  /* About */
+  #about p {
+    max-width: 700px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    color: #ccc;
+  }
+
+  /* Skills */
+  #skills ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+  #skills li {
+    background: #1e1e1e;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,183,255,0.5);
+    transition: transform 0.2s ease;
+  }
+  #skills li:hover {
+    transform: scale(1.1);
+  }
+
+  /* Projects */
+  #projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+  }
+  .project-card {
+    background: #1e1e1e;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,183,255,0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.3s ease;
+  }
+  .project-card:hover {
+    box-shadow: 0 0 20px 3px #ff6f61;
+  }
+  .project-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+  }
+  .project-content {
+    padding: 15px 18px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .project-title {
+    font-size: 1.3rem;
+    margin: 0 0 10px;
+    color: #00b7ff;
+  }
+  .project-description {
+    flex-grow: 1;
+    font-size: 0.95rem;
+    color: #ccc;
+    margin-bottom: 15px;
+  }
+  .project-links a {
+    margin-right: 12px;
+    font-weight: 600;
+    color: #ff6f61;
+  }
+  .project-links a:hover {
+    color: #00b7ff;
+  }
+
+  /* Contact */
+  #contact form {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  #contact label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  #contact input,
+  #contact textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #2e2e2e;
+    color: #eee;
+    resize: vertical;
+  }
+  #contact input:focus,
+  #contact textarea:focus {
+    outline: 2px solid #00b7ff;
+  }
+  #contact button {
+    background: #00b7ff;
+    color: #121212;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+  }
+  #contact button:hover {
+    background: #ff6f61;
+    color: #fff;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 20px 0 35px;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 540px) {
+    header h1 {
+      font-size: 2.8rem;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Rd Ilham</h1>
+    <p>Creative Frontend Developer & Designer crafting beautiful web experiences</p>
+  </header>
+
+  <div class="container">
+    <section id="about">
+      <h2>About Me</h2>
+      <p>Hi! I'm Ilham, a passionate frontend developer with 2+ years building responsive, accessible, and modern websites. I thrive on creating aesthetically pleasing and intuitive user interfaces that provide a delightful user experience.</p>
+    </section>
+
+    <section id="skills">
+      <h2>Skills</h2>
+      <ul>
+        <li>HTML5</li>
+        <li>CSS3 & Sass</li>
+        <li>JavaScript (ES6+)</li>
+        <li>React.js</li>
+        <li>Vue.js</li>
+        <li>Responsive Design</li>
+        <li>Git & GitHub</li>
+        <li>Webpack & Vite</li>
+      </ul>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+
+      <div class="project-card">
+        <img src="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=600&q=80" alt="Project One" class="project-image" />
+        <div class="project-content">
+          <h3 class="project-title">Creative Portfolio Website</h3>
+          <p class="project-description">A modern portfolio built with React and styled-components showcasing animations and interactive UI elements.</p>
+          <div class="project-links">
+            <a href="https://github.com/johndoe/portfolio" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://johndoe-portfolio.netlify.app" target="_blank" rel="noopener">Live Demo</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" alt="Project Two" class="project-image" />
+        <div class="project-content">
+          <h3 class="project-title">E-commerce Shop UI</h3>
+          <p class="project-description">Designed and developed a responsive e-commerce front end with Vue.js including product filters and cart functionality.</p>
+          <div class="project-links">
+            <a href="https://github.com/johndoe/ecommerce-ui" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://johndoe-ecommerce.web.app" target="_blank" rel="noopener">Live Demo</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="https://images.unsplash.com/photo-1506765515384-028b60a970df?auto=format&fit=crop&w=600&q=80" alt="Project Three" class="project-image" />
+        <div class="project-content">
+          <h3 class="project-title">Blog Platform</h3>
+          <p class="project-description">A sleek and minimalist blog platform UI using vanilla JS with localStorage support for drafts and favorites.</p>
+          <div class="project-links">
+            <a href="https://github.com/johndoe/blog-platform" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://johndoe-blog.netlify.app" target="_blank" rel="noopener">Live Demo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Me</h2>
+      <form id="contact-form" onsubmit="handleSubmit(event)">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Your full name" required />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Your email address" required />
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Your message here" required></textarea>
+
+        <button type="submit">Send Message</button>
+      </form>
+      <p id="form-status" style="text-align:center; font-weight:bold; margin-top: 15px;"></p>
+    </section>
+  </div>
+
+  <footer>
+    &copy; 2025 Rd Ilham. All rights reserved.
+  </footer>
+
+  <script>
+    function handleSubmit(e) {
+      e.preventDefault();
+      const status = document.getElementById('form-status');
+      // Simple validation already by required attribute
+      status.style.color = '#00b7ff';
+      status.textContent = 'Sending message... (Demo only, no actual submission)';
+      setTimeout(() => {
+        status.style.color = '#0f0';
+        status.textContent = 'Thank you for reaching out! I will get back to you soon.';
+        e.target.reset();
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
+

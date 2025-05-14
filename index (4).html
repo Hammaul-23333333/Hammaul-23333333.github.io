@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>E-Learning Platform - Student & Teacher</title>
+<style>
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #f5f7fa;
+    color: #2c3e50;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  a {
+    color: #2980b9;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  /* Container */
+  .container {
+    max-width: 960px;
+    margin: 20px auto 60px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(44, 62, 80, 0.1);
+    padding: 20px;
+  }
+  /* Hidden screens */
+  .hidden {
+    display: none;
+  }
+  /* Header with logout button */
+  header {
+    background: #34495e;
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 20px;
+  }
+  header button.logout {
+    background: #e74c3c;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+  }
+  header button.logout:hover {
+    background: #c0392b;
+  }
+  /* Form styles */
+  form {
+    max-width: 400px;
+    margin: auto;
+  }
+  form h2 {
+    text-align: center;
+    margin-bottom: 12px;
+    font-weight: 700;
+    color: #34495e;
+  }
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #34495e;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="date"],
+  select,
+  textarea,
+  input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    border: 1px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="date"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #2980b9;
+    outline: none;
+  }
+  button, input[type="submit"] {
+    background: #2980b9;
+    border: none;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.2s ease;
+  }
+  button:hover, input[type="submit"]:hover {
+    background: #1f6391;
+  }
+  .error-message {
+    color: #c0392b;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .info-message {
+    color: #2980b9;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  /* Nav menu */
+  nav.menu {
+    margin: 20px 0 10px;
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 2px solid #2980b9;
+  }
+  nav.menu button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 15px;
+    color: #34495e;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s ease, border-bottom 0.2s ease;
+  }
+  nav.menu button.active,
+  nav.menu button:hover {
+    color: #2980b9;
+    border-bottom: 3px solid #2980b9;
+  }
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid #bdc3c7;
+    padding: 10px 8px;
+    text-align: left;
+  }
+  th {
+    background: #ecf0f1;
+  }
+  /* Profile picture preview */
+  .profile-pic-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 60px;
+    object-fit: cover;
+    border: 3px solid #2980b9;
+    margin: 10px auto 20px;
+    display: block;
+  }
+  /* Responsive */
+  @media (max-width: 600px) {
+    .container {
+      margin: 10px;
+      padding: 15px;
+    }
+    nav.menu {
+      flex-wrap: wrap;
+    }
+    nav.menu button {
+      flex: 1 0 45%;
+      margin-bottom: 6px;
+    }
+  }
+  /* Link-like button */
+  .link-button {
+    background: none;
+    border: none;
+    color: #2980b9;
+    cursor: pointer;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .link-button:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+<header class="hidden" id="header">
+  <h1>E-Learning Platform</h1>
+  <button class="logout" id="logoutBtn">Logout</button>
+</header>
+<div class="container">
+  <!-- Login selection screen -->
+  <section id="selectLoginScreen">
+    <h2>Welcome to E-Learning</h2>
+    <p style="text-align:center;">Please select your login type:</p>
+    <div style="display:flex; justify-content:center; gap:20px; margin-top:20px;">
+      <button id="toStudentLogin" style="flex:1; max-width:180px; padding:15px; font-size:16px; border-radius:8px; border:2px solid #2980b9; background:#2980b9; color:white; cursor:pointer; font-weight:700;">Student Login</button>
+      <button id="toTeacherLogin" style="flex:1; max-width:180px; padding:15px; font-size:16px; border-radius:8px; border:2px solid #27ae60; background:#27ae60; color:white; cursor:pointer; font-weight:700;">Teacher Login</button>
+    </div>
+  </section>
+  <!-- Student Login -->
+  <section id="studentLoginScreen" class="hidden">
+    <form id="studentLoginForm" autocomplete="off" novalidate>
+      <h2>Student Login</h2>
+      <div class="error-message" id="studentLoginError"></div>
+      <label for="studentEmail">Email</label>
+      <input type="email" id="studentEmail" required placeholder="Enter your student email" />
+      <label for="studentPassword">Password</label>
+      <input type="password" id="studentPassword" required placeholder="Enter your password" />
+      <button type="submit">Login</button>
+      <button type="button" class="link-button" id="studentForgotPasswordBtn">Forgot Password?</button>
+      <button type="button" class="link-button" id="backToSelectFromStudent">Back</button>
+    </form>
+  </section>
+  <!-- Teacher Login -->
+  <section id="teacherLoginScreen" class="hidden">
+    <form id="teacherLoginForm" autocomplete="off" novalidate>
+      <h2>Teacher Login</h2>
+      <div class="error-message" id="teacherLoginError"></div>
+      <label for="teacherEmail">Email</label>
+      <input type="email" id="teacherEmail" required placeholder="Enter your teacher email" />
+      <label for="teacherPassword">Password</label>
+      <input type="password" id="teacherPassword" required placeholder="Enter your password" />
+      <button type="submit">Login</button>
+      <button type="button" class="link-button" id="teacherForgotPasswordBtn">Forgot Password?</button>
+      <button type="button" class="link-button" id="backToSelectFromTeacher">Back</button>
+    </form>
+  </section>
+  <!-- Forgot Password Screen -->
+  <section id="forgotPasswordScreen" class="hidden">
+    <form id="forgotPasswordForm" autocomplete="off" novalidate>
+      <h2>Forgot Password</h2>
+      <div class="info-message" id="forgotInfoMessage">Enter your email to reset the password.</div>
+      <div class="error-message" id="forgotErrorMessage"></div>
+      <label for="forgotEmail">Email</label>
+      <input type="email" id="forgotEmail" required placeholder="Enter your registered email" />
+      <button type="submit">Send Reset Link</button>
+      <button type="button" class="link-button" id="forgotBackBtn">Back to Login</button>
+    </form>
+  </section>
+
+  <!-- Main Dashboard -->
+  <section id="dashboardScreen" class="hidden">
+    <nav class="menu" id="dashboardMenu">
+      <!-- Menu buttons generated by JS -->
+    </nav>
+    <div id="dashboardContent" style="margin-top:20px;">
+      <!-- Content loaded dynamically -->
+    </div>
+  </section>
+</div>
+
+<script>
+  // ==== DATA SIMULATION ====
+  // We simulate users, classes, schedules, attendance, exams, results
+  // For real app this should be from secured backend database
+
+  const db = {
+    users: [
+      // Students
+      {
+        id: 'stu1',
+        role: 'student',
+        email: 'yoga@example.com',
+        password: 'pass1234',
+        name: 'Yoga wibowo',
+        dob: '2005-08-15',
+        birthplace: 'Purwakarta',
+        address: 'Purwakarta',
+        postalCode: '4111**',
+        classId: 'classA',
+        photo: '', // base64 image or empty
+      },
+      {
+        id: 'stu2',
+        role: 'student',
+        email: 'sari@example.com',
+        password: 'pass12345',
+        name: 'Sari Anggraeni',
+        dob: '2005-12-30',
+        birthplace: 'Purwakarta',
+        address: 'Purwakarta',
+        postalCode: '4111**',
+        classId: 'classB',
+        photo: '',
+      },
+      // Teachers
+      {
+        id: 'teach1',
+        role: 'teacher',
+        email: 'Budi@example.com',
+        password: '12345678',
+        name: 'Budi Santoso',
+        dob: '1980-04-22',
+        birthplace: 'Surabaya',
+        address: 'Jl. Veteran No.8',
+        postalCode: '60111',
+        classIds: ['classA'],
+        photo: '',
+      },
+      {
+        id: 'teach2',
+        role: 'teacher',
+        email: 'rini@example.com',
+        password: '1234567',
+        name: 'Rini Handayani',
+        dob: '1975-11-05',
+        birthplace: 'Yogyakarta',
+        address: 'Jl. Malioboro No.15',
+        postalCode: '55211',
+        classIds: ['classB'],
+        photo: '',
+      },
+    ],
+    classes: [
+      { id: 'classA', name: 'Class A' },
+      { id: 'classB', name: 'Class B' },
+    ],
+    subjects: [
+      { id: 'subj1', name: 'Mathematics' },
+      { id: 'subj2', name: 'Indonesian Language' },
+      { id: 'subj3', name: 'Science' },
+      { id: 'subj4', name: 'English' },
+      { id: 'subj5', name: 'History' },
+    ],
+    schedules: [
+      // Student schedules by class, dayOfWeek defined as 0=Sun,1=Mon,...6=Sat
+      // Schedule entries have classId, dayOfWeek, subjectId, time
+      { classId: 'classA', dayOfWeek: 1, subjectId: 'subj1', time: '08:00 - 09:30' },
+      { classId: 'classA', dayOfWeek: 1, subjectId: 'subj3', time: '09:45 - 11:15' },
+      { classId: 'classA', dayOfWeek: 2, subjectId: 'subj2', time: '08:00 - 09:30' },
+      { classId: 'classB', dayOfWeek: 1, subjectId: 'subj4', time: '08:00 - 09:30' },
+      { classId: 'classB', dayOfWeek: 1, subjectId: 'subj5', time: '09:45 - 11:15' },
+      { classId: 'classB', dayOfWeek: 3, subjectId: 'subj1', time: '08:00 - 09:30' },
+      { classId: 'classB', dayOfWeek: 3, subjectId: 'subj2', time: '09:45 - 11:15' },
+    ],
+    attendance: [
+      // attendance records keyed by userId and date (YYYY-MM-DD)
+      { userId: 'stu1', date: '2024-06-01', status: 'Present' },
+      { userId: 'stu1', date: '2024-06-02', status: 'Absent' },
+      { userId: 'stu2', date: '2024-06-01', status: 'Present' },
+      { userId: 'stu2', date: '2024-06-02', status: 'Present' },
+    ],
+    exams: [
+      // Exams for semester, by class
+      {
+        id: 'exam1',
+        classId: 'classA',
+        semester: '1',
+        name: 'Semester 1 Final Exams',
+        subjects: ['subj1', 'subj2', 'subj3'],
+        dates: {
+          subj1: '2024-06-15',
+          subj2: '2024-06-16',
+          subj3: '2024-06-17',
+        },
+      },
+      {
+        id: 'exam2',
+        classId: 'classB',
+        semester: '1',
+        name: 'Semester 1 Final Exams',
+        subjects: ['subj4', 'subj5'],
+        dates: {
+          subj4: '2024-06-15',
+          subj5: '2024-06-16',
+        },
+      },
+    ],
+    examResults: [
+      { userId: 'stu1', examId: 'exam1', scores: { subj1: 87, subj2: 90, subj3: 85 } },
+      { userId: 'stu2', examId: 'exam2', scores: { subj4: 88, subj5: 92 } },
+    ],
+  };
+
+  // Utility functions
+  function formatDate(d) {
+    const dt = new Date(d);
+    if (isNaN(dt)) return d;
+    return dt.toLocaleDateString();
+  }
+  function getDayName(dayIdx) {
+    return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIdx];
+  }
+  // Get today's schedules filtered by class and today's day
+  function getSchedulesForToday(classId) {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    return db.schedules.filter(s => s.classId === classId && s.dayOfWeek === dayOfWeek);
+  }
+  // Get attendance by userId
+  function getUserAttendance(userId) {
+    return db.attendance.filter(att => att.userId === userId);
+  }
+  // Get exam info by classId
+  function getExamsByClass(classId) {
+    return db.exams.filter(e => e.classId === classId);
+  }
+  // Get exam result by userId & examId
+  function getExamResult(userId, examId) {
+    return db.examResults.find(er => er.userId === userId && er.examId === examId);
+  }
+  // Find user by email & role
+  function findUserByEmailRole(email, role) {
+    return db.users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.role === role);
+  }
+  // Validate email format
+  function validateEmail(email) {
+    return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+  }
+
+
+  // ==== APP STATE & DOM Elements ====
+  let currentUser = null; // User object after login
+  let currentView = '';   // current dashboard menu
+  let currentResetEmailRole = null; // to store role for forgot password reset
+
+  // DOM Elements
+  const headerEl = document.getElementById('header');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  const selectLoginScreen = document.getElementById('selectLoginScreen');
+
+  const studentLoginScreen = document.getElementById('studentLoginScreen');
+  const teacherLoginScreen = document.getElementById('teacherLoginScreen');
+
+  const dashboardScreen = document.getElementById('dashboardScreen');
+  const dashboardMenu = document.getElementById('dashboardMenu');
+  const dashboardContent = document.getElementById('dashboardContent');
+
+  const forgotPasswordScreen = document.getElementById('forgotPasswordScreen');
+  const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+  const forgotEmailInput = document.getElementById('forgotEmail');
+  const forgotErrorMessage = document.getElementById('forgotErrorMessage');
+  const forgotInfoMessage = document.getElementById('forgotInfoMessage');
+  const forgotBackBtn = document.getElementById('forgotBackBtn');
+
+  const studentLoginForm = document.getElementById('studentLoginForm');
+  const teacherLoginForm = document.getElementById('teacherLoginForm');
+  const studentLoginError = document.getElementById('studentLoginError');
+  const teacherLoginError = document.getElementById('teacherLoginError');
+
+  // Navigation buttons from select login screen
+  document.getElementById('toStudentLogin').addEventListener('click', () => {
+    showScreen('studentLogin');
+  });
+  document.getElementById('toTeacherLogin').addEventListener('click', () => {
+    showScreen('teacherLogin');
+  });
+  document.getElementById('backToSelectFromStudent').addEventListener('click', () => {
+    showScreen('selectLogin');
+  });
+  document.getElementById('backToSelectFromTeacher').addEventListener('click', () => {
+    showScreen('selectLogin');
+  });
+
+  // Forgot password buttons
+  document.getElementById('studentForgotPasswordBtn').addEventListener('click', () => {
+    currentResetEmailRole = 'student';
+    showForgotPasswordScreen();
+  });
+  document.getElementById('teacherForgotPasswordBtn').addEventListener('click', () => {
+    currentResetEmailRole = 'teacher';
+    showForgotPasswordScreen();
+  });
+  forgotBackBtn.addEventListener('click', () => {
+    hideForgotPasswordScreen();
+  });
+
+  // Logout button
+  logoutBtn.addEventListener('click', () => {
+    logoutUser();
+  });
+
+  // ==== Show/Hide Screens ====
+  function showScreen(screen) {
+    // Hide all first
+    selectLoginScreen.classList.add('hidden');
+    studentLoginScreen.classList.add('hidden');
+    teacherLoginScreen.classList.add('hidden');
+    dashboardScreen.classList.add('hidden');
+    forgotPasswordScreen.classList.add('hidden');
+    headerEl.classList.add('hidden');
+    clearMessages();
+
+    switch(screen) {
+      case 'selectLogin':
+        selectLoginScreen.classList.remove('hidden');
+        currentUser = null;
+        break;
+      case 'studentLogin':
+        studentLoginScreen.classList.remove('hidden');
+        break;
+      case 'teacherLogin':
+        teacherLoginScreen.classList.remove('hidden');
+        break;
+      case 'dashboard':
+        dashboardScreen.classList.remove('hidden');
+        headerEl.classList.remove('hidden');
+        break;
+      case 'forgotPassword':
+        forgotPasswordScreen.classList.remove('hidden');
+        break;
+    }
+  }
+  function showForgotPasswordScreen() {
+    showScreen('forgotPassword');
+    forgotEmailInput.value = '';
+    forgotErrorMessage.textContent = '';
+    forgotInfoMessage.textContent = 'Enter your email to reset the password.';
+  }
+  function hideForgotPasswordScreen() {
+    if (currentResetEmailRole === 'student') showScreen('studentLogin');
+    else if (currentResetEmailRole === 'teacher') showScreen('teacherLogin');
+    else showScreen('selectLogin');
+  }
+  function clearMessages() {
+    studentLoginError.textContent = '';
+    teacherLoginError.textContent = '';
+    forgotErrorMessage.textContent = '';
+    forgotInfoMessage.textContent = '';
+  }
+
+  // ==== Login Handling ====
+
+  studentLoginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearMessages();
+    const email = document.getElementById('studentEmail').value.trim();
+    const password = document.getElementById('studentPassword').value.trim();
+    if (!validateEmail(email)) {
+      studentLoginError.textContent = 'Please enter a valid email.';
+      return;
+    }
+    const user = findUserByEmailRole(email, 'student');
+    if (!user) {
+      studentLoginError.textContent = 'No student found with this email.';
+      return;
+    }
+    if (password !== user.password) {
+      studentLoginError.textContent = 'Incorrect password.';
+      return;
+    }
+    loginUser(user);
+  });
+
+  teacherLoginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearMessages();
+    const email = document.getElementById('teacherEmail').value.trim();
+    const password = document.getElementById('teacherPassword').value.trim();
+    if (!validateEmail(email)) {
+      teacherLoginError.textContent = 'Please enter a valid email.';
+      return;
+    }
+    const user = findUserByEmailRole(email, 'teacher');
+    if (!user) {
+      teacherLoginError.textContent = 'No teacher found with this email.';
+      return;
+    }
+    if (password !== user.password) {
+      teacherLoginError.textContent = 'Incorrect password.';
+      return;
+    }
+    loginUser(user);
+  });
+
+  // ==== Forgot password form ====
+  forgotPasswordForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    forgotErrorMessage.textContent = '';
+    forgotInfoMessage.textContent = '';
+    const email = forgotEmailInput.value.trim();
+    if (!validateEmail(email)) {
+      forgotErrorMessage.textContent = 'Please enter a valid email.';
+      return;
+    }
+    const user = findUserByEmailRole(email, currentResetEmailRole);
+    if (!user) {
+      forgotErrorMessage.textContent = 'No user found with this email.';
+      return;
+    }
+    // Simulate sending reset link
+    forgotInfoMessage.textContent = 'Reset link sent to your email. (Simulated)';
+    // After 3 seconds back to login
+    setTimeout(() => {
+      hideForgotPasswordScreen();
+    }, 3000);
+  });
+
+  // ==== Login user and load dashboard ====
+  function loginUser(user) {
+    currentUser = user;
+    headerEl.querySelector('h1').textContent = `E-Learning Platform - ${currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1)}`;
+    showDashboard();
+  }
+
+  function logoutUser() {
+    currentUser = null;
+    currentView = '';
+    showScreen('selectLogin');
+  }
+
+  // ==== Dashboard menu items ====
+
+  function getMenuItemsForRole(role) {
+    if (role === 'student') {
+      return [
+        { id: 'scheduleToday', label: 'Jadwal Pelajaran Hari Ini' },
+        { id: 'attendance', label: 'Kehadiran' },
+        { id: 'allSchedules', label: 'Jadwal Mata Pelajaran' },
+        { id: 'exams', label: 'Ujian Semester' },
+        { id: 'examResults', label: 'Hasil Nilai Ujian Semester' },
+        { id: 'profile', label: 'Pengaturan Profil' },
+      ];
+    } else if (role === 'teacher') {
+      return [
+        { id: 'scheduleToday', label: 'Jadwal Mengajar Hari Ini' },
+        { id: 'attendance', label: 'Kehadiran Siswa' },
+        { id: 'allSchedules', label: 'Jadwal Mengajar' },
+        { id: 'exams', label: 'Ujian Semester' },
+        { id: 'examResults', label: 'Hasil Nilai Ujian Semester' },
+        { id: 'profile', label: 'Pengaturan Profil' },
+      ];
+    }
+    return [];
+  }
+
+  // ==== Render dashboard menu ====
+  function showDashboard() {
+    showScreen('dashboard');
+    renderMenu();
+    // Default to first menu item
+    const menuItems = getMenuItemsForRole(currentUser.role);
+    if (menuItems.length > 0) {
+      showDashboardView(menuItems[0].id);
+    }
+  }
+
+  // Render menu buttons
+  function renderMenu() {
+    const menuItems = getMenuItemsForRole(currentUser.role);
+    dashboardMenu.innerHTML = '';
+    menuItems.forEach(item => {
+      const btn = document.createElement('button');
+      btn.textContent = item.label;
+      btn.id = 'menu-' + item.id;
+      btn.className = currentView === item.id ? 'active' : '';
+      btn.addEventListener('click', () => {
+        showDashboardView(item.id);
+      });
+      dashboardMenu.appendChild(btn);
+    });
+  }
+
+  // Show specific dashboard view content
+  function showDashboardView(view) {
+    currentView = view;
+    // Update menu active
+    [...dashboardMenu.children].forEach(btn => {
+      btn.classList.toggle('active', btn.id === 'menu-' + view);
+    });
+    switch(view) {
+      case 'scheduleToday': renderScheduleToday(); break;
+      case 'attendance': renderAttendance(); break;
+      case 'allSchedules': renderAllSchedules(); break;
+      case 'exams': renderExams(); break;
+      case 'examResults': renderExamResults(); break;
+      case 'profile': renderProfile(); break;
+      default:
+        dashboardContent.innerHTML = '<p>Feature not implemented yet.</p>';
+    }
+  }
+
+  // ==== Views ====
+
+  // 1. Schedule Today
+  function renderScheduleToday() {
+    let html = `<h2>${currentUser.role === 'student' ? 'Jadwal Pelajaran Hari Ini' : 'Jadwal Mengajar Hari Ini'}</h2>`;
+    let entries = [];
+    if (currentUser.role === 'student') {
+      entries = getSchedulesForToday(currentUser.classId);
+    } else if (currentUser.role === 'teacher') {
+      // For teachers, get today's subjects based on classes they teach
+      const today = new Date().getDay();
+      entries = db.schedules.filter(s => currentUser.classIds.includes(s.classId) && s.dayOfWeek === today);
+    }
+    if (entries.length === 0) {
+      html += '<p>Tidak ada jadwal hari ini.</p>';
+      dashboardContent.innerHTML = html;
+      return;
+    }
+    html += '<table><thead><tr><th>Waktu</th><th>Mata Pelajaran</th><th>Kelas</th></tr></thead><tbody>';
+    entries.forEach(e => {
+      const subj = db.subjects.find(s => s.id === e.subjectId);
+      const cls = db.classes.find(c => c.id === e.classId);
+      html += `<tr><td>${e.time}</td><td>${subj ? subj.name : ''}</td><td>${cls ? cls.name : ''}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    dashboardContent.innerHTML = html;
+  }
+
+  // 2. Attendance
+  function renderAttendance() {
+    let html = `<h2>${currentUser.role === 'student' ? 'Kehadiran Anda' : 'Kehadiran Siswa'}</h2>`;
+    if (currentUser.role === 'student') {
+      const attendance = getUserAttendance(currentUser.id);
+      if (attendance.length === 0) {
+        html += '<p>Belum ada record kehadiran.</p>';
+        dashboardContent.innerHTML = html;
+        return;
+      }
+      html += '<table><thead><tr><th>Tanggal</th><th>Status</th></tr></thead><tbody>';
+      attendance.forEach(att => {
+        html += `<tr><td>${formatDate(att.date)}</td><td>${att.status}</td></tr>`;
+      });
+      html += '</tbody></table>';
+    } else if (currentUser.role === 'teacher') {
+      // Teacher sees attendance for their classes students
+      // Find students of the teacher's classes
+      let students = db.users.filter(u => u.role === 'student' && currentUser.classIds.includes(u.classId));
+      if (students.length === 0) {
+        html += '<p>Tidak ada siswa di kelas Anda.</p>';
+        dashboardContent.innerHTML = html;
+        return;
+      }
+      html += '<table><thead><tr><th>Nama Siswa</th><th>Tanggal</th><th>Status</th></tr></thead><tbody>';
+      students.forEach(student => {
+        const attendance = getUserAttendance(student.id);
+        if (attendance.length === 0) {
+          html += `<tr><td>${student.name}</td><td colspan="2">Tidak ada record</td></tr>`;
+        } else {
+          attendance.forEach(att => {
+            html += `<tr><td>${student.name}</td><td>${formatDate(att.date)}</td><td>${att.status}</td></tr>`;
+          });
+        }
+      });
+      html += '</tbody></table>';
+    }
+    dashboardContent.innerHTML = html;
+  }
+
+  // 3. All Schedules
+  function renderAllSchedules() {
+    let html = `<h2>${currentUser.role === 'student' ? 'Jadwal Mata Pelajaran Kelas Anda' : 'Jadwal Mengajar Kelas Anda'}</h2>`;
+    if (currentUser.role === 'student') {
+      const classSchedules = db.schedules.filter(s => s.classId === currentUser.classId);
+      if (classSchedules.length === 0) {
+        html += '<p>Tidak ada jadwal mata pelajaran untuk kelas Anda.</p>';
+        dashboardContent.innerHTML = html;
+        return;
+      }
+      // Group by day
+      const grouped = {};
+      classSchedules.forEach(sch => {
+        if (!grouped[sch.dayOfWeek]) grouped[sch.dayOfWeek] = [];
+        grouped[sch.dayOfWeek].push(sch);
+      });
+      html += '<table><thead><tr><th>Hari</th><th>Waktu</th><th>Mata Pelajaran</th></tr></thead><tbody>';
+      Object.keys(grouped).sort((a,b)=>a-b).forEach(day => {
+        grouped[day].forEach((s,i) => {
+          const subj = db.subjects.find(su => su.id === s.subjectId);
+          html += `<tr><td>${i===0 ? getDayName(day) : ''}</td><td>${s.time}</td><td>${subj ? subj.name : ''}</td></tr>`;
+        });
+      });
+      html += '</tbody></table>';
+    } else if (currentUser.role === 'teacher') {
+      // Teacher classes schedules
+      let teacherSchedules = db.schedules.filter(s => currentUser.classIds.includes(s.classId));
+      if (teacherSchedules.length === 0) {
+        html += '<p>Tidak ada jadwal mengajar untuk kelas Anda.</p>';
+        dashboardContent.innerHTML = html;
+        return;
+      }
+      // Group by day
+      const grouped = {};
+      teacherSchedules.forEach(sch => {
+        if (!grouped[sch.dayOfWeek]) grouped[sch.dayOfWeek] = [];
+        grouped[sch.dayOfWeek].push(sch);
+      });
+      html += '<table><thead><tr><th>Hari</th><th>Waktu</th><th>Mata Pelajaran</th><th>Kelas</th></tr></thead><tbody>';
+      Object.keys(grouped).sort((a,b)=>a-b).forEach(day => {
+        grouped[day].forEach((s,i) => {
+          const subj = db.subjects.find(su => su.id === s.subjectId);
+          const cls = db.classes.find(c => c.id === s.classId);
+          html += `<tr><td>${i===0 ? getDayName(day) : ''}</td><td>${s.time}</td><td>${subj ? subj.name : ''}</td><td>${cls ? cls.name : ''}</td></tr>`;
+        });
+      });
+      html += '</tbody></table>';
+    }
+    dashboardContent.innerHTML = html;
+  }
+
+  // 4. Exams
+  function renderExams() {
+    let html = `<h2>Ujian Semester</h2>`;
+    let classIds = [];
+    if (currentUser.role === 'student') classIds = [currentUser.classId];
+    else if (currentUser.role === 'teacher') classIds = currentUser.classIds;
+    const exams = classIds.flatMap(cid => getExamsByClass(cid));
+    if (exams.length === 0) {
+      html += '<p>Tidak ada ujian semester.</p>';
+      dashboardContent.innerHTML = html;
+      return;
+    }
+    exams.forEach(ex => {
+      html += `<h3>${ex.name} - Kelas: ${db.classes.find(c => c.id === ex.classId)?.name || ''}</h3>`;
+      html += '<table><thead><tr><th>Mata Pelajaran</th><th>Tanggal</th></tr></thead><tbody>';
+      ex.subjects.forEach(subjId => {
+        const subj = db.subjects.find(s => s.id === subjId);
+        html += `<tr><td>${subj ? subj.name : ''}</td><td>${formatDate(ex.dates[subjId])}</td></tr>`;
+      });
+      html += '</tbody></table>';
+    });
+    dashboardContent.innerHTML = html;
+  }
+
+  // 5. Exam Results
+  function renderExamResults() {
+    let html = `<h2>Hasil Nilai Ujian Semester</h2>`;
+    if (currentUser.role === 'student') {
+      const results = db.examResults.filter(r => r.userId === currentUser.id);
+      if (results.length === 0) {
+        html += '<p>Belum ada hasil nilai ujian.</p>';
+        dashboardContent.innerHTML = html;
+        return;
+      }
+      results.forEach(res => {
+        const exam = db.exams.find(e => e.id === res.examId);
+        if (!exam) return;
+        html += `<h3>${exam.name} - Kelas: ${db.classes.find(c => c.id === exam.classId)?.name || ''}</h3>`;
+        html += '<table><thead><tr><th>Mata Pelajaran</th><th>Nilai</th></tr></thead><tbody>';
+        Object.entries(res.scores).forEach(([subjId, score]) => {
+          const subj = db.subjects.find(s => s.id === subjId);
+          html += `<tr><td>${subj ? subj.name : ''}</td><td>${score}</td></tr>`;
+        });
+        html += '</tbody></table>';
+      });
+    } else if (currentUser.role === 'teacher') {
+      // Teacher can see multiple students results from their classes
+      const classIds = currentUser.classIds;
+      const students = db.users.filter(u => u.role === 'student' && classIds.includes(u.classId));
+      if (students.length === 0) {
+        html += '<p>Tidak ada siswa di kelas Anda.</p>';
+        dashboardContent.innerHTML = html;
+        return;
+      }
+      students.forEach(student => {
+        const results = db.examResults.filter(r => r.userId === student.id);
+        if (results.length === 0) {
+          html += `<h3>${student.name} - Tidak ada hasil ujian</h3>`;
+          return;
+        }
+        results.forEach(res => {
+          const exam = db.exams.find(e => e.id === res.examId);
+          if (!exam) return;
+          html += `<h3>${student.name} - ${exam.name} - Kelas: ${db.classes.find(c => c.id === exam.classId)?.name || ''}</h3>`;
+          html += '<table><thead><tr><th>Mata Pelajaran</th><th>Nilai</th></tr></thead><tbody>';
+          Object.entries(res.scores).forEach(([subjId, score]) => {
+            const subj = db.subjects.find(s => s.id === subjId);
+            html += `<tr><td>${subj ? subj.name : ''}</td><td>${score}</td></tr>`;
+          });
+          html += '</tbody></table>';
+        });
+      });
+    }
+    dashboardContent.innerHTML = html;
+  }
+
+  // 6. Profile & Settings
+  function renderProfile() {
+    let html = `<h2>Pengaturan Profil</h2>`;
+    // Show profile picture preview with upload
+    html += `
+      <img src="${currentUser.photo || 'https://via.placeholder.com/120?text=No+Photo'}" alt="Profile Picture" class="profile-pic-preview" id="profilePicPreview" />
+      <form id="profileForm" autocomplete="off" novalidate>
+        <label for="photoUpload">Foto Profil</label>
+        <input type="file" id="photoUpload" accept="image/*" />
+        <label for="nameInput">Nama</label>
+        <input type="text" id="nameInput" value="${escapeHtml(currentUser.name)}" required />
+        <label for="dobInput">Tanggal Lahir</label>
+        <input type="date" id="dobInput" value="${currentUser.dob}" required />
+        <label for="birthplaceInput">Kota Kelahiran</label>
+        <input type="text" id="birthplaceInput" value="${escapeHtml(currentUser.birthplace)}" required/>
+        <label for="addressInput">Alamat</label>
+        <textarea id="addressInput" rows="2" required>${escapeHtml(currentUser.address)}</textarea>
+        <label for="postalCodeInput">Kode Pos</label>
+        <input type="text" id="postalCodeInput" value="${escapeHtml(currentUser.postalCode)}" required />
+        <button type="submit">Simpan Profil</button>
+      </form>
+
+      <h3>Ubah Password</h3>
+      <form id="changePasswordForm" autocomplete="off" novalidate>
+        <label for="currentPassword">Password Saat Ini</label>
+        <input type="password" id="currentPassword" required />
+        <label for="newPassword">Password Baru</label>
+        <input type="password" id="newPassword" required minlength="6" />
+        <label for="confirmPassword">Konfirmasi Password Baru</label>
+        <input type="password" id="confirmPassword" required minlength="6" />
+        <button type="submit">Ganti Password</button>
+      </form>
+
+      <h3>Ubah Email</h3>
+      <form id="changeEmailForm" autocomplete="off" novalidate>
+        <label for="newEmail">Email Baru</label>
+        <input type="email" id="newEmail" value="${escapeHtml(currentUser.email)}" required />
+        <button type="submit">Ganti Email</button>
+      </form>
+
+      <div id="profileMessages" style="margin-top: 12px; font-weight: 600;"></div>
+    `;
+
+    dashboardContent.innerHTML = html;
+    // Setup event listeners for profile forms & photo upload
+    const photoUploadInput = document.getElementById('photoUpload');
+    const profilePicPreview = document.getElementById('profilePicPreview');
+    photoUploadInput.addEventListener('change', (e) => {
+      const file = photoUploadInput.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        alert('File yang dipilih bukan gambar.');
+        photoUploadInput.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        profilePicPreview.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    const profileForm = document.getElementById('profileForm');
+    profileForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      saveProfile();
+    });
+
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    changePasswordForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      changePassword();
+    });
+
+    const changeEmailForm = document.getElementById('changeEmailForm');
+    changeEmailForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      changeEmail();
+    });
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/[&<>"']/g, m => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    })[m]);
+  }
+
+  function saveProfile() {
+    const nameInput = document.getElementById('nameInput').value.trim();
+    const dobInput = document.getElementById('dobInput').value;
+    const birthplaceInput = document.getElementById('birthplaceInput').value.trim();
+    const addressInput = document.getElementById('addressInput').value.trim();
+    const postalCodeInput = document.getElementById('postalCodeInput').value.trim();
+    const photoInput = document.getElementById('photoUpload');
+
+    const messagesEl = document.getElementById('profileMessages');
+    messagesEl.textContent = '';
+
+    if (!nameInput || !dobInput || !birthplaceInput || !addressInput || !postalCodeInput) {
+      messagesEl.style.color = '#c0392b';
+      messagesEl.textContent = 'Semua field wajib diisi.';
+      return;
+    }
+    // Update currentUser profile
+    currentUser.name = nameInput;
+    currentUser.dob = dobInput;
+    currentUser.birthplace = birthplaceInput;
+    currentUser.address = addressInput;
+    currentUser.postalCode = postalCodeInput;
+    if (photoInput.files.length > 0) {
+      const file = photoInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        currentUser.photo = event.target.result;
+        showDashboardView('profile'); // re-render to show updated photo
+        messagesEl.style.color = '#27ae60';
+        messagesEl.textContent = 'Profil berhasil disimpan.';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      messagesEl.style.color = '#27ae60';
+      messagesEl.textContent = 'Profil berhasil disimpan.';
+    }
+  }
+
+  function changePassword() {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const messagesEl = document.getElementById('profileMessages');
+    messagesEl.style.color = '#c0392b';
+    messagesEl.textContent = '';
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      messagesEl.textContent = 'Semua field password wajib diisi.';
+      return;
+    }
+    if (currentPassword !== currentUser.password) {
+      messagesEl.textContent = 'Password saat ini salah.';
+      return;
+    }
+    if (newPassword.length < 6) {
+      messagesEl.textContent = 'Password baru minimal 6 karakter.';
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      messagesEl.textContent = 'Konfirmasi password tidak cocok.';
+      return;
+    }
+    currentUser.password = newPassword;
+    messagesEl.style.color = '#27ae60';
+    messagesEl.textContent = 'Password berhasil diubah.';
+    // Clear password fields
+    document.getElementById('currentPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+  }
+  function changeEmail() {
+    const newEmail = document.getElementById('newEmail').value.trim();
+    const messagesEl = document.getElementById('profileMessages');
+    messagesEl.style.color = '#c0392b';
+    messagesEl.textContent = '';
+
+    if (!validateEmail(newEmail)) {
+      messagesEl.textContent = 'Email tidak valid.';
+      return;
+    }
+    // Check if email already used by other user
+    const emailExists = db.users.some(u => u.email.toLowerCase() === newEmail.toLowerCase() && u.id !== currentUser.id);
+    if (emailExists) {
+      messagesEl.textContent = 'Email sudah digunakan oleh pengguna lain.';
+      return;
+    }
+    currentUser.email = newEmail;
+    messagesEl.style.color = '#27ae60';
+    messagesEl.textContent = 'Email berhasil diubah.';
+  }
+
+  // ==== Initialize app to select login screen ====
+  showScreen('selectLogin');
+</script>
+</body>
+</html>
+

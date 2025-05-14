@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Web & App Developer Portfolio</title>
+<style>
+  /* Reset and Base */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #0e101a;
+    color: #e0e0e0;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+  }
+
+  a {
+    color: #61dafb;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+
+  header {
+    background: #121421;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.7);
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .logo {
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+    color: #61dafb;
+  }
+
+  .menu {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  .menu li {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .menu li a {
+    padding: 8px 10px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+  }
+  .menu li a:hover,
+  .menu li a.active {
+    background-color: #61dafb;
+    color: #0e101a;
+    font-weight: 700;
+  }
+
+  main {
+    padding-top: 80px;
+    padding-bottom: 40px;
+  }
+
+  section {
+    padding: 40px 0;
+    border-bottom: 1px solid #222533;
+  }
+  section:last-child {
+    border: none;
+  }
+
+  h1, h2, h3 {
+    margin-bottom: 20px;
+    font-weight: 700;
+    color: #61dafb;
+  }
+
+  h1 {
+    font-size: 2.8rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  .intro {
+    max-width: 700px;
+    font-size: 1.1rem;
+    color: #ccc;
+  }
+
+  /* Skills Grid */
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .skill-item {
+    background-color: #212432;
+    border-radius: 8px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1 1 140px;
+    min-width: 140px;
+    box-shadow: 0 2px 8px #121421aa;
+    transition: transform 0.25s ease;
+    cursor: default;
+  }
+  .skill-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px #61dafbaa;
+  }
+
+  .skill-icon {
+    width: 32px;
+    height: 32px;
+    fill: #61dafb;
+    flex-shrink: 0;
+  }
+  .skill-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #eaeaea;
+  }
+
+  /* Projects Grid */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+    gap: 24px;
+  }
+
+  .project-card {
+    background: #212432;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px #121421bb;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  .project-card:hover {
+    box-shadow: 0 10px 30px #61dafbaa;
+  }
+
+  .project-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #33374d;
+  }
+  .project-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .project-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 10px;
+    color: #61dafb;
+  }
+  .project-desc {
+    flex-grow: 1;
+    color: #bbb;
+  }
+  .project-tech {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #888;
+  }
+
+  /* Contact Form */
+  .contact-form {
+    max-width: 600px;
+    background: #212432;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px #121421cc;
+  }
+  .contact-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #61dafb;
+  }
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #10121c;
+    color: #ddd;
+    resize: vertical;
+    box-shadow: inset 0 0 5px #000000bb;
+    transition: background 0.3s ease;
+  }
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    background: #181a29;
+    outline: none;
+  }
+  .contact-form button {
+    background-color: #61dafb;
+    color: #0e101a;
+    border: none;
+    padding: 14px 22px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+  .contact-form button:hover {
+    background-color: #21a1f1;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 2.2rem;
+    }
+    nav {
+      flex-wrap: wrap;
+      height: auto;
+      padding: 5px 0;
+    }
+    .menu {
+      width: 100%;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">DEVPORT</div>
+      <ul class="menu">
+        <li><a href="#about" class="active">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section id="about">
+    <h1>Hello, I'm Ilham a Web & App Developer</h1>
+    <p class="intro">
+      I build modern applications and websites with passion and attention to detail. Experienced in developing scalable web and mobile apps using diverse technologies. I focus on delivering quality, clean code, and excellent user experience.
+    </p>
+  </section>
+
+  <section id="skills">
+    <h2>My Skills</h2>
+    <div class="skills-list">
+      <!-- HTML -->
+      <div class="skill-item" title="HTML5">
+        <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.5 0h21l-1.909 21.818L12 24l-8.591-2.182L1.5 0z" fill="#e34f26"/><path d="M19.006 7.18H6.997l.18 2.02h11.6l-.04.43-1.318 14.986L12 22.843 8.95 21.58l-.541-6.07h3.32l.227 2.56 2.887-.776.19-2.132-5.526-.002-.188-2.098h7.246l.163-1.79z" fill="#ef652a"/></svg>
+        <span class="skill-text">HTML5</span>
+      </div>
+      <!-- MySQL -->
+      <div class="skill-item" title="MySQL">
+        <svg class="skill-icon" viewBox="0 0 512 512" aria-hidden="true"><path fill="#4479a1" d="M256 0C114.624 0 0 53.333 0 119.04c0 49.216 54.784 21.504 80.768 48.128 14.933 15.573 12.546 36.373 23.04 63.232 19.84 47.68-4.373 89.92-29.376 113.28-13.44 13.866-20.053 23.04-18.048 26.986 3.733 7.345 37.227-9.173 56.449-19.84 33.066-18.56 51.2-38.221 60.677-54.272 8.533-14.72 18.56-57.113 29.44-45.312 29.867 34.133 102.923 51.2 132.267 19.328 10.432-11.733-1.28-26.24-11.733-29.866-18.048-6.7-88.746-12.267-94.336-45.12-3.306-22.293 9.6-54.528 38.976-54.528 11.853 0 20.48-2.56 40.533-14.933 32-20.507 29.866-67.2-10.24-81.97-14.933-5.333-22.94-7.68-36.053-7.68z"/></svg>
+        <span class="skill-text">MySQL</span>
+      </div>
+      <!-- Java -->
+      <div class="skill-item" title="Java">
+        <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#5382a1" d="M8 21.5h5.438v-1.532H8v1.532z"/><path fill="#5382a1" d="M17.554 17.847c-.405-.46-1.114-.888-1.743-.86-.754.037-1.426.438-2.688 1.444-.52.46-3.07 2.563-7.816.438-.717-.28-1.321-1.067-1.321-2.337 0-2.16 2.276-2.885 5.553-2.636 4.32.326 5.404-.78 5.465-1.818 0-.153-.19-.353-.812-.64-.853-.413-2.306-.82-4.26-1.306-3.816-.9-5.625-1.956-5.625-4.36 0-2.17 1.717-3.386 3.622-3.667 2.065-.318 3.475-1.002 3.826-2.83v-.01c.03-.16-.17-.163-.213-.098-1.11 2.032-3.315 2.605-5.11 3.08l-.87.196v-1.1L8.984 2h6.06L14.05 4l1.53-.753c.06 1.54-2.878 2.93-3.335 3.06-.1.038-.03.2.084.16 2.032-.73 3.705-1.26 4.47-1.607v10.188l-1.796 1.992z"/></svg>
+        <span class="skill-text">Java</span>
+      </div>
+      <!-- Linux -->
+      <div class="skill-item" title="Linux">
+        <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FCC624" d="M12 0C5.37 0 0 5.37 0 12c0 3.386 1.532 6.462 3.953 8.484L6 20a3.18 3.18 0 011.125-2.662c.573-.48 1.284-.826 2.027-.98L9 12l1.69-4.28a3.14 3.14 0 011.717-1.75C19.23 8.256 19.91 12 19.91 12 20.56 14.5 19.77 17.797 17.612 19.753 15.84 21.39 12.77 21.99 12 22c-6.63 0-12-5.37-12-12S5.37 0 12 0z"/></svg>
+        <span class="skill-text">Linux</span>
+      </div>
+      <!-- Dart -->
+      <div class="skill-item" title="Dart">
+        <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#0175c2" d="M22 3h-8v7.5l2.5 2.5h6V3z"/><path fill="#00bbf1" d="M12 3H2v18l18-8V3z"/></svg>
+        <span class="skill-text">Dart</span>
+      </div>
+      <!-- Python -->
+      <div class="skill-item" title="Python">
+        <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#306998" d="M12 0C9.31 0 8 2 8 2h6c3 0 4 2 4 2v4c0 4-3 4-3 4H8s-3 0-3 4v2c0 2.5 2 3 2 3h4c4 0 4-4 4-4v-4l-6-2v-3z"/><path fill="#ffd43b" d="M12 24c2.69 0 4-2 4-2h-6c-3 0-4-2-4-2v-4c0-4 3-4 3-4h6s3 0 3-4v-2c0-2.5-2-3-2-3h-4c-4 0-4 4-4 4v4l6 2v3z"/></svg>
+        <span class="skill-text">Python</span>
+      </div>
+      <!-- React -->
+      <div class="skill-item" title="React">
+        <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.05" fill="#61dafb"/><path fill="none" stroke="#61dafb" stroke-width="1.5" d="M2 12c0-2.6 6-7 10-7s10 4.4 10 7-6 7-10 7-10-4.4-10-7z"/><path fill="none" stroke="#61dafb" stroke-width="1.5" d="M12 2c0 2 4 6 4 10s-4 8-4 10-4-6-4-10 4-8 4-10z"/></svg>
+        <span class="skill-text">React</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <div class="projects-grid">
+      <div class="project-card" tabindex="0" aria-label="Project 1: Responsive Web Application">
+        <img src="https://images.unsplash.com/photo-1506765515384-028b60a970df?auto=format&fit=crop&w=800&q=80" alt="Screenshot of responsive web app" class="project-image" loading="lazy" />
+        <div class="project-content">
+          <h3 class="project-title">Responsive Web Application</h3>
+          <p class="project-desc">A fully responsive web app built with React, HTML, and CSS. Optimized for all devices.</p>
+          <div class="project-tech">Technologies: React, HTML5, CSS3</div>
+        </div>
+      </div>
+      <div class="project-card" tabindex="0" aria-label="Project 2: Android Dart App">
+        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80" alt="Screenshot of Dart Android app" class="project-image" loading="lazy" />
+        <div class="project-content">
+          <h3 class="project-title">Android Dart App</h3>
+          <p class="project-desc">A mobile application developed using Dart and Flutter, compatible with Android and iOS.</p>
+          <div class="project-tech">Technologies: Dart, Flutter</div>
+        </div>
+      </div>
+      <div class="project-card" tabindex="0" aria-label="Project 3: Java Backend Service">
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" alt="Java backend service code screen" class="project-image" loading="lazy" />
+        <div class="project-content">
+          <h3 class="project-title">Java Backend Service</h3>
+          <p class="project-desc">Built scalable API services with Java and MySQL integration tailored to business needs.</p>
+          <div class="project-tech">Technologies: Java, MySQL</div>
+        </div>
+      </div>
+      <div class="project-card" tabindex="0" aria-label="Project 4: Linux Server Automation">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt="Linux server command line" class="project-image" loading="lazy" />
+        <div class="project-content">
+          <h3 class="project-title">Linux Server Automation</h3>
+          <p class="project-desc">Automated deployment scripts and server management on Linux environments for improved uptime.</p>
+          <div class="project-tech">Technologies: Linux, Bash Scripting</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact Me</h2>
+    <form class="contact-form" onsubmit="event.preventDefault(); alert('Thank you for reaching out! I will get back to you soon.'); this.reset();">
+      <label for="name">Name</label>
+      <input id="name" type="text" name="name" placeholder="Your name" required />
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email" placeholder="Your email" required />
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="5" placeholder="Your message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+</main>
+
+<script>
+  // Highlight active menu on scroll
+  const sections = document.querySelectorAll('section');
+  const menuLinks = document.querySelectorAll('.menu a');
+
+  function changeActiveMenu() {
+    let index = sections.length;
+
+    while(--index && window.scrollY + 70 < sections[index].offsetTop) {}
+
+    menuLinks.forEach((link) => link.classList.remove('active'));
+    if(menuLinks[index]) menuLinks[index].classList.add('active');
+  }
+
+  window.addEventListener('scroll', changeActiveMenu);
+
+  // Smooth scroll handled natively by CSS scroll-behavior property
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>E-Learning Login & Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    font-family: 'Roboto', sans-serif;
+    background: #1a237e;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+  #app {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+  /* Common Panels */
+  .panel {
+    background: #283593;
+    border-radius: 16px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    width: 350px;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  h2 {
+    margin: 0 0 15px 0;
+    font-weight: 700;
+    text-align: center;
+  }
+  button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    background: #3949ab;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 15px;
+    transition: background 0.3s ease;
+    user-select: none;
+  }
+  button:hover {
+    background: #5c6bc0;
+  }
+  input[type="text"], input[type="password"], input[type="email"], select, textarea {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    outline: none;
+    width: 100%;
+  }
+  input:focus, textarea:focus {
+    box-shadow: 0 0 5px 2px #7986cb;
+  }
+  label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+    font-weight: 600;
+  }
+  .link-button {
+    background: transparent;
+    color: #90caf9;
+    padding: 0;
+    font-weight: 500;
+    font-size: 13px;
+    text-align: right;
+  }
+  .link-button:hover {
+    text-decoration: underline;
+    background: transparent;
+    color: #bbdefb;
+  }
+
+  /* Login Panel */
+  #login-panel {
+    padding: 30px 30px 20px 30px;
+  }
+  #login-error {
+    background: #e53935;
+    color: white;
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: none;
+  }
+
+  /* Forgot Password Modal */
+  #forgot-password-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  #forgot-password-content {
+    background: #3949ab;
+    border-radius: 16px;
+    padding: 25px 25px 20px 25px;
+    width: 320px;
+    max-width: 90vw;
+    color: #fff;
+  }
+
+  /* Dashboard Panel */
+  #dashboard {
+    display: none;
+    height: 100%;
+    overflow-y: auto;
+  }
+  #dashboard-header {
+    background: #283593;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    user-select: none;
+  }
+  #dashboard-content {
+    padding: 15px 20px 20px 20px;
+  }
+
+  .menu-section {
+    margin-bottom: 25px;
+  }
+  .menu-section h3 {
+    font-weight: 700;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #7986cb;
+    padding-bottom: 6px;
+  }
+  .menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .menu-list li {
+    background: #3949ab;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    user-select: none;
+  }
+  .menu-list li:hover {
+    background: #5c6bc0;
+  }
+
+  /* Settings form */
+  form.settings-form {
+    background: #3949ab;
+    padding: 15px;
+    border-radius: 12px;
+    max-height: 440px;
+    overflow-y: auto;
+  }
+  form settings-form label {
+    color: #e0e0e0;
+  }
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  /* Barcode scan placeholder */
+  #barcode-scan-container {
+    background: #3949ab;
+    border-radius: 12px;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #c5cae9;
+    font-weight: 600;
+    font-size: 16px;
+    user-select: none;
+    border: 2px dashed #7986cb;
+  }
+
+  /* Scrollbar for forms and dashboard content */
+  #dashboard-content::-webkit-scrollbar,
+  form.settings-form::-webkit-scrollbar {
+    width: 6px;
+  }
+  #dashboard-content::-webkit-scrollbar-thumb,
+  form.settings-form::-webkit-scrollbar-thumb {
+    background: #7986cb;
+    border-radius: 3px;
+  }
+
+  /* Responsive: fit smaller devices */
+  @media (max-width: 400px) {
+    .panel {
+      width: 95vw;
+      height: 95vh;
+      max-height: none;
+    }
+  }
+
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Login Panel -->
+  <div class="panel" id="login-panel" aria-label="Form Login">
+    <h2>Login E-Learning</h2>
+    <div id="login-error" role="alert"></div>
+    <label for="email-input">Email</label>
+    <input type="email" id="email-input" placeholder="email@example.com" autocomplete="username" required />
+    <label for="password-input">Password</label>
+    <input type="password" id="password-input" placeholder="Password" autocomplete="current-password" required />
+    <button id="login-btn" type="button">Login</button>
+    <button class="link-button" id="forgot-password-link" type="button">Lupa Password?</button>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgot-password-modal" role="dialog" aria-modal="true" aria-labelledby="forgot-password-title">
+    <div id="forgot-password-content">
+      <h2 id="forgot-password-title">Reset Password</h2>
+      <p>Masukkan email untuk reset password:</p>
+      <input type="email" id="reset-email-input" placeholder="email@example.com" />
+      <button id="reset-password-btn" type="button">Kirim Link Reset</button>
+      <button class="link-button" id="close-forgot-password" type="button">Tutup</button>
+      <div id="reset-msg" style="margin-top:12px;font-size:14px;"></div>
+    </div>
+  </div>
+
+  <!-- Dashboard Main Panel -->
+  <div class="panel" id="dashboard" aria-label="Dashboard" tabindex="0" >
+    <div id="dashboard-header">Dashboard E-Learning</div>
+    <div id="dashboard-content">
+      <div class="menu-section">
+        <h3>Menu Utama</h3>
+        <ul class="menu-list">
+          <li data-menu="dashboard">Dasboard</li>
+          <li data-menu="jadwal-pelajaran">Jadwal Pelajaran Hari ini</li>
+          <li data-menu="jadwal-ujian">Jadwal Ujian Semester</li>
+        </ul>
+      </div>
+
+      <div class="menu-section">
+        <h3>Menu Pelajaran</h3>
+        <ul class="menu-list">
+          <li data-menu="mata-pelajaran">Mata Pelajaran</li>
+          <li data-menu="kehadiran">Kehadiran (Scan Barcode)</li>
+          <li data-menu="nilai-semester">Nilai Tengah & Akhir Semester</li>
+        </ul>
+      </div>
+
+      <div class="menu-section">
+        <h3>Pengaturan</h3>
+        <ul class="menu-list">
+          <li data-menu="pengaturan-profil">Profil</li>
+          <li data-menu="pengaturan-asal-sekolah">Asal Sekolah & Tahun Kelulusan</li>
+          <li data-menu="pengaturan-ganti-password">Ganti Password</li>
+          <li data-menu="pengaturan-ganti-email">Ganti Email</li>
+          <li data-menu="exit">Exit</li>
+        </ul>
+      </div>
+
+      <div id="content-area" style="margin-top: 20px; color: #e8eaf6;">
+        <!-- Dynamic content based on menu -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  (function(){
+    // Cached DOM
+    const loginPanel = document.getElementById('login-panel');
+    const dashboard = document.getElementById('dashboard');
+    const contentArea = document.getElementById('content-area');
+    const loginBtn = document.getElementById('login-btn');
+    const loginError = document.getElementById('login-error');
+    const emailInput = document.getElementById('email-input');
+    const passwordInput = document.getElementById('password-input');
+    const forgotLink = document.getElementById('forgot-password-link');
+    const forgotModal = document.getElementById('forgot-password-modal');
+    const closeForgotBtn = document.getElementById('close-forgot-password');
+    const resetEmailInput = document.getElementById('reset-email-input');
+    const resetPasswordBtn = document.getElementById('reset-password-btn');
+    const resetMsg = document.getElementById('reset-msg');
+
+    // Dummy user database (for demo)
+    const dummyUser = {
+      email: 'siswa@elearning.com',
+      password: 'password123',
+      profile: {
+        nama: 'Rd.Ilham Maulana Ramdhani',
+        tanggalLahir: '2003-11-23',
+        kotaKelahiran: 'Purwakarta',
+        alamat: 'Purwakarta',
+        noPokokSiswa: '123456789012',
+        namaAyah: 'Santoso',
+        namaIbu: 'Siti Aminah',
+        noHp: '081234567890',
+        asalSekolah: 'SMP ****',
+        tahunKelulusan: '2019'
+      }
+    };
+
+    // Auth state
+    let loggedIn = false;
+
+    // Utilities
+    function showPanel(panelToShow) {
+      if(panelToShow === 'login'){
+        loginPanel.style.display = 'flex';
+        dashboard.style.display = 'none';
+      } else if(panelToShow === 'dashboard'){
+        loginPanel.style.display = 'none';
+        dashboard.style.display = 'flex';
+        contentArea.innerHTML = '<p>Selamat datang di Dashboard E-Learning!</p>';
+        contentArea.focus();
+      }
+    }
+
+    function validateEmail(email) {
+      const re = /^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+      return re.test(String(email).toLowerCase());
+    }
+
+    // Login
+    loginBtn.addEventListener('click', () => {
+      loginError.style.display = 'none';
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      if(!validateEmail(email)){
+        loginError.textContent = 'Format email tidak valid';
+        loginError.style.display = 'block';
+        return;
+      }
+      if(password.length < 6){
+        loginError.textContent = 'Password harus minimal 6 karakter';
+        loginError.style.display = 'block';
+        return;
+      }
+      // Check dummy user
+      if(email === dummyUser.email && password === dummyUser.password){
+        loggedIn = true;
+        showPanel('dashboard');
+      } else {
+        loginError.textContent = 'Email atau password salah';
+        loginError.style.display = 'block';
+      }
+    });
+
+    // Forgot Password handlers
+    forgotLink.addEventListener('click', () => {
+      forgotModal.style.display = 'flex';
+      resetMsg.textContent = '';
+      resetEmailInput.value = '';
+      resetEmailInput.focus();
+    });
+    closeForgotBtn.addEventListener('click', () => {
+      forgotModal.style.display = 'none';
+    });
+    resetPasswordBtn.addEventListener('click', () => {
+      resetMsg.textContent = '';
+      const email = resetEmailInput.value.trim();
+      if(!validateEmail(email)){
+        resetMsg.style.color = '#e57373';
+        resetMsg.textContent = 'Masukkan email yang valid.';
+        return;
+      }
+      // Simulate sending email
+      if(email === dummyUser.email){
+        resetMsg.style.color = '#aed581';
+        resetMsg.textContent = 'Link reset password telah dikirim ke email Anda.';
+      } else {
+        resetMsg.style.color = '#e57373';
+        resetMsg.textContent = 'Email tidak ditemukan dalam sistem.';
+      }
+    });
+
+    // Dashboard menu clicks
+    dashboard.querySelectorAll('.menu-list li').forEach(li => {
+      li.addEventListener('click', () => {
+        const menu = li.getAttribute('data-menu');
+        loadContent(menu);
+      });
+    });
+
+    // Load content based on menu selection
+    function loadContent(menu) {
+      switch(menu){
+        case 'dashboard':
+          contentArea.innerHTML = '<p>Selamat datang di Dashboard E-Learning!</p>';
+          break;
+
+        case 'jadwal-pelajaran':
+          contentArea.innerHTML = 
+            '<h3>Jadwal Pelajaran Hari ini</h3>' +
+            '<ul>' +
+              '<li>07:30 - 08:15: Matematika</li>' +
+              '<li>08:15 - 09:00: Bahasa Indonesia</li>' +
+              '<li>09:00 - 09:45: IPA</li>' +
+              '<li>10:00 - 10:45: Bahasa Inggris</li>' +
+            '</ul>';
+          break;
+
+        case 'jadwal-ujian':
+          contentArea.innerHTML = 
+            '<h3>Jadwal Ujian Semester</h3>' +
+            '<ul>' +
+              '<li>Senin, 20 Desember 2024: Matematika</li>' +
+              '<li>Selasa, 21 Desember 2024: Bahasa Indonesia</li>' +
+              '<li>Rabu, 22 Desember 2024: IPA</li>' +
+              '<li>Kamis, 23 Desember 2024: Bahasa Inggris</li>' +
+            '</ul>';
+          break;
+
+        case 'mata-pelajaran':
+          contentArea.innerHTML = 
+            '<h3>Mata Pelajaran</h3>' +
+            '<ul>' +
+              '<li>Matematika</li>' +
+              '<li>Bahasa Indonesia</li>' +
+              '<li>IPA</li>' +
+              '<li>Bahasa Inggris</li>' +
+              '<li>Sejarah</li>' +
+              '<li>PKN</li>' +
+            '</ul>';
+          break;
+
+        case 'kehadiran':
+          contentArea.innerHTML = 
+            '<h3>Kehadiran via Scan Barcode</h3>' +
+            '<div id="barcode-scan-container">Fitur scan barcode belum tersedia.<br>Gunakan kamera untuk scan barcode.</div>';
+          break;
+
+        case 'nilai-semester':
+          contentArea.innerHTML = 
+            '<h3>Nilai Tengah & Akhir Semester</h3>' +
+            '<table style="border-collapse: collapse; width: 100%; color: #e8eaf6;">' +
+              '<thead>' +
+                '<tr style="border-bottom: 2px solid #7986cb;">' +
+                  '<th style="text-align:left; padding: 8px;">Mata Pelajaran</th>' +
+                  '<th style="text-align:left; padding: 8px;">Nilai Tengah Semester</th>' +
+                  '<th style="text-align:left; padding: 8px;">Nilai Akhir Semester</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' +
+                '<tr><td style="padding: 8px;">Matematika</td><td style="padding: 8px;">85</td><td style="padding: 8px;">89</td></tr>' +
+                '<tr><td style="padding: 8px;">Bahasa Indonesia</td><td style="padding: 8px;">90</td><td style="padding: 8px;">93</td></tr>' +
+                '<tr><td style="padding: 8px;">IPA</td><td style="padding: 8px;">88</td><td style="padding: 8px;">90</td></tr>' +
+                '<tr><td style="padding: 8px;">Bahasa Inggris</td><td style="padding: 8px;">80</td><td style="padding: 8px;">85</td></tr>' +
+              '</tbody>' +
+            '</table>';
+          break;
+
+        case 'pengaturan-profil':
+          contentArea.innerHTML = `
+            <h3>Pengaturan Profil</h3>
+            <form class="settings-form" id="profile-form">
+              <div class="form-group">
+                <label for="nama">Nama</label>
+                <input type="text" id="nama" value="${dummyUser.profile.nama}" required />
+              </div>
+              <div class="form-group">
+                <label for="tglLahir">Tanggal Lahir</label>
+                <input type="date" id="tglLahir" value="${dummyUser.profile.tanggalLahir}" required />
+              </div>
+              <div class="form-group">
+                <label for="kotaLahir">Kota Kelahiran</label>
+                <input type="text" id="kotaLahir" value="${dummyUser.profile.kotaKelahiran}" required />
+              </div>
+              <div class="form-group">
+                <label for="alamat">Alamat</label>
+                <textarea id="alamat" rows="2" required>${dummyUser.profile.alamat}</textarea>
+              </div>
+              <div class="form-group">
+                <label for="noPokokSiswa">No Pokok Siswa</label>
+                <input type="text" id="noPokokSiswa" value="${dummyUser.profile.noPokokSiswa}" required />
+              </div>
+              <div class="form-group">
+                <label for="namaAyah">Nama Ayah</label>
+                <input type="text" id="namaAyah" value="${dummyUser.profile.namaAyah}" required />
+              </div>
+              <div class="form-group">
+                <label for="namaIbu">Nama Ibu</label>
+                <input type="text" id="namaIbu" value="${dummyUser.profile.namaIbu}" required />
+              </div>
+              <div class="form-group">
+                <label for="noHp">No Handphone</label>
+                <input type="text" id="noHp" value="${dummyUser.profile.noHp}" required />
+              </div>
+              <button type="submit">Simpan Profil</button>
+              <div id="profile-msg" style="margin-top:10px; font-size:14px;"></div>
+            </form>
+          `;
+          // attach profile form handler
+          setTimeout(() => {
+            const profileForm = document.getElementById('profile-form');
+            const profileMsg = document.getElementById('profile-msg');
+            profileForm.addEventListener('submit', (e) => {
+              e.preventDefault();
+              // Basic validation could be here
+              // Update dummyUser data
+              dummyUser.profile.nama = document.getElementById('nama').value.trim();
+              dummyUser.profile.tanggalLahir = document.getElementById('tglLahir').value;
+              dummyUser.profile.kotaKelahiran = document.getElementById('kotaLahir').value.trim();
+              dummyUser.profile.alamat = document.getElementById('alamat').value.trim();
+              dummyUser.profile.noPokokSiswa = document.getElementById('noPokokSiswa').value.trim();
+              dummyUser.profile.namaAyah = document.getElementById('namaAyah').value.trim();
+              dummyUser.profile.namaIbu = document.getElementById('namaIbu').value.trim();
+              dummyUser.profile.noHp = document.getElementById('noHp').value.trim();
+              profileMsg.style.color = '#aed581';
+              profileMsg.textContent = 'Profil berhasil disimpan.';
+            });
+          }, 100);
+          break;
+
+        case 'pengaturan-asal-sekolah':
+          contentArea.innerHTML = `
+            <h3>Pengaturan Asal Sekolah & Tahun Kelulusan</h3>
+            <form class="settings-form" id="school-form">
+              <div class="form-group">
+                <label for="asalSekolah">Asal Sekolah</label>
+                <input type="text" id="asalSekolah" value="${dummyUser.profile.asalSekolah}" required />
+              </div>
+              <div class="form-group">
+                <label for="tahunKelulusan">Tahun Kelulusan</label>
+                <input type="number" id="tahunKelulusan" min="1900" max="2099" value="${dummyUser.profile.tahunKelulusan}" required />
+              </div>
+              <button type="submit">Simpan Data Sekolah</button>
+              <div id="school-msg" style="margin-top:10px; font-size:14px;"></div>
+            </form>
+          `;
+          // attach school form handler
+          setTimeout(() => {
+            const schoolForm = document.getElementById('school-form');
+            const schoolMsg = document.getElementById('school-msg');
+            schoolForm.addEventListener('submit', (e) => {
+              e.preventDefault();
+              dummyUser.profile.asalSekolah = document.getElementById('asalSekolah').value.trim();
+              dummyUser.profile.tahunKelulusan = document.getElementById('tahunKelulusan').value;
+              schoolMsg.style.color = '#aed581';
+              schoolMsg.textContent = 'Data sekolah berhasil disimpan.';
+            });
+          }, 100);
+          break;
+
+        case 'pengaturan-ganti-password':
+          contentArea.innerHTML = `
+            <h3>Ganti Password</h3>
+            <form class="settings-form" id="password-form">
+              <div class="form-group">
+                <label for="oldPassword">Password Lama</label>
+                <input type="password" id="oldPassword" required />
+              </div>
+              <div class="form-group">
+                <label for="newPassword">Password Baru</label>
+                <input type="password" id="newPassword" required />
+              </div>
+              <div class="form-group">
+                <label for="confirmPassword">Konfirmasi Password Baru</label>
+                <input type="password" id="confirmPassword" required />
+              </div>
+              <button type="submit">Ganti Password</button>
+              <div id="password-msg" style="margin-top:10px; font-size:14px;"></div>
+            </form>
+          `;
+          setTimeout(() => {
+            const passwordForm = document.getElementById('password-form');
+            const passwordMsg = document.getElementById('password-msg');
+            passwordForm.addEventListener('submit', (e) => {
+              e.preventDefault();
+              const oldP = document.getElementById('oldPassword').value;
+              const newP = document.getElementById('newPassword').value;
+              const confirmP = document.getElementById('confirmPassword').value;
+              if(oldP !== dummyUser.password){
+                passwordMsg.style.color = '#e57373';
+                passwordMsg.textContent = 'Password lama salah.';
+                return;
+              }
+              if(newP.length < 6){
+                passwordMsg.style.color = '#e57373';
+                passwordMsg.textContent = 'Password baru minimal 6 karakter.';
+                return;
+              }
+              if(newP !== confirmP){
+                passwordMsg.style.color = '#e57373';
+                passwordMsg.textContent = 'Konfirmasi password tidak cocok.';
+                return;
+              }
+              dummyUser.password = newP;
+              passwordMsg.style.color = '#aed581';
+              passwordMsg.textContent = 'Password berhasil diganti.';
+              // Clear fields
+              passwordForm.reset();
+            });
+          }, 120);
+          break;
+
+        case 'pengaturan-ganti-email':
+          contentArea.innerHTML = `
+            <h3>Ganti Email</h3>
+            <form class="settings-form" id="email-form">
+              <div class="form-group">
+                <label for="newEmail">Email Baru</label>
+                <input type="email" id="newEmail" required />
+              </div>
+              <button type="submit">Ganti Email</button>
+              <div id="email-msg" style="margin-top:10px; font-size:14px;"></div>
+            </form>
+          `;
+          setTimeout(() => {
+            const emailForm = document.getElementById('email-form');
+            const emailMsg = document.getElementById('email-msg');
+            emailForm.addEventListener('submit', (e) => {
+              e.preventDefault();
+              const newEmail = document.getElementById('newEmail').value.trim();
+              if(!validateEmail(newEmail)){
+                emailMsg.style.color = '#e57373';
+                emailMsg.textContent = 'Format email tidak valid.';
+                return;
+              }
+              dummyUser.email = newEmail;
+              emailMsg.style.color = '#aed581';
+              emailMsg.textContent = 'Email berhasil diganti.';
+              emailForm.reset();
+            });
+          }, 100);
+          break;
+
+        case 'exit':
+          // Log out user - return to login screen
+          loggedIn = false;
+          emailInput.value = '';
+          passwordInput.value = '';
+          loginError.style.display = 'none';
+          showPanel('login');
+          break;
+
+        default:
+          contentArea.innerHTML = '';
+      }
+    }
+
+    // On load show login
+    showPanel('login');
+
+  })();
+</script>
+</body>
+</html>
+

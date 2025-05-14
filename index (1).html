@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>E-Learning Login and Dashboard</title>
+<style>
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin:0; padding:0; height:100vh; width:100vw;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #333;
+    overflow: hidden;
+  }
+  #app {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  /* Login Screen */
+  #login-screen {
+    background: white;
+    padding: 30px 25px 20px 25px;
+    border-radius: 12px;
+    width: 90vw;
+    max-width: 350px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  }
+  #login-screen h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #4b3f6b;
+    text-align: center;
+  }
+  label {
+    display: block;
+    margin-top: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  input[type=email], input[type=password] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1.8px solid #bbb;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  input[type=email]:focus, input[type=password]:focus {
+    outline: none;
+    border-color: #764ba2;
+  }
+  button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px 0;
+    background-color: #764ba2;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #5c368a;
+  }
+  .forgot-password {
+    margin-top: 15px;
+    text-align: right;
+  }
+  .forgot-password button {
+    background: none;
+    border: none;
+    color: #764ba2;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: underline;
+    padding: 0;
+  }
+  /* Modal for Forgot Password */
+  #modal-forgot-password {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+  }
+  #modal-forgot-password .modal-content {
+    background: white;
+    padding: 20px 25px 30px;
+    border-radius: 12px;
+    width: 90vw;
+    max-width: 320px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  }
+  #modal-forgot-password h3 {
+    margin-top: 0;
+    color: #4b3f6b;
+  }
+  #modal-forgot-password input {
+    margin-top: 10px;
+  }
+  #modal-forgot-password button {
+    margin-top: 18px;
+    width: 100%;
+  }
+  #modal-forgot-password .close-btn {
+    margin-top: 10px;
+    background: #ccc;
+    color:#333;
+  }
+  /* Main App Container */
+  #main-app {
+    height: 100vh;
+    width: 100vw;
+    display: none;
+    flex-direction: column;
+    background: #f4f4f8;
+  }
+  /* Header */
+  #main-app header {
+    background: #764ba2;
+    color: white;
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-align: center;
+    user-select: none;
+  }
+  /* Navigation Tabs */
+  nav {
+    display: flex;
+    background: #9374b9;
+    user-select: none;
+  }
+  nav button {
+    flex-grow: 1;
+    padding: 10px 0;
+    border: none;
+    background: #9374b9;
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+  nav button.active,
+  nav button:hover {
+    background: #5C368A;
+  }
+  /* Content Views */
+  .tab-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 12px 16px 24px;
+  }
+  /* Dashboard Cards */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  @media(min-width: 400px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .card {
+    background: white;
+    padding: 16px 18px;
+    border-radius: 14px;
+    box-shadow: 0 5px 15px rgba(50,50,93,.1), 0 2px 5px rgba(0,0,0,.07);
+  }
+  .card h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #4b3f6b;
+  }
+  /* Lists */
+  ul {
+    padding-left: 18px;
+    margin-top: 0;
+  }
+  li {
+    margin-bottom: 8px;
+    color: #444;
+  }
+  /* Main Menu Tabs inside Main Menu */
+  #menu-sections {
+    display: flex;
+    margin-bottom: 12px;
+    overflow-x: auto;
+  }
+  #menu-sections button {
+    flex: none;
+    margin-right: 10px;
+    padding: 8px 16px;
+    font-weight: 600;
+    border-radius: 14px;
+    border: none;
+    background: #9374b9;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+  }
+  #menu-sections button.active,
+  #menu-sections button:hover {
+    background: #5c368a;
+  }
+  /* Sections inside Main Menu */
+  .section-content {
+    background: white;
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 6px 20px rgb(90 44 150 / 0.45);
+    min-height: 250px;
+  }
+  /* Subjects */
+  #subjects ul {
+    list-style:none;
+    padding: 0;
+  }
+  #subjects li {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 6px;
+    cursor: default;
+    color: #555;
+    font-weight: 600;
+  }
+  /* Attendance */
+  #attendance video {
+    width: 100%;
+    border-radius: 12px;
+    background: black;
+  }
+  #attendance .scan-status {
+    margin-top: 12px;
+    font-weight: 700;
+    color: #5c368a;
+    min-height: 24px;
+  }
+  /* Scores table */
+  #scores table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  #scores th, #scores td {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+  #scores th {
+    background: #764ba2;
+    color: white;
+  }
+  /* Settings Form */
+  #settings form {
+    max-width: 100%;
+  }
+  #settings label {
+    font-weight: 600;
+    margin-top: 16px;
+    display: block;
+    color: #4b3f6b;
+  }
+  #settings input[type=text],
+  #settings input[type=date],
+  #settings input[type=email],
+  #settings input[type=tel],
+  #settings input[type=password],
+  #settings select {
+    margin-top: 6px;
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1.8px solid #bbb;
+    transition: border-color 0.3s ease;
+  }
+  #settings input[type=text]:focus,
+  #settings input[type=date]:focus,
+  #settings input[type=email]:focus,
+  #settings input[type=tel]:focus,
+  #settings input[type=password]:focus,
+  #settings select:focus {
+    border-color: #764ba2;
+    outline: none;
+  }
+  #settings .form-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  #settings .form-row > div {
+    flex: 1 1 48%;
+  }
+  #settings button.save-btn {
+    background: #764ba2;
+    color: white;
+    padding: 14px 6px;
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    margin-top: 20px;
+    cursor: pointer;
+    width: 100%;
+  }
+  #settings button.save-btn:hover {
+    background: #5c368a;
+  }
+  /* Profile photo preview */
+  #profile-photo-preview {
+    width: 120px;
+    height: 120px;
+    background: #ddd;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #764ba2;
+    margin-top: 8px;
+    display: block;
+  }
+  /* Exit button styling */
+  #btn-exit {
+    margin-top: 30px;
+    background: #d9534f;
+    color: white;
+    border:none;
+    padding: 12px 0;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.1rem;
+  }
+  #btn-exit:hover {
+    background: #b23227;
+  }
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f4f4f8;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #764ba2;
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Login Screen -->
+  <div id="login-screen">
+    <h2>Login E-Learning</h2>
+    <form id="login-form">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="********" required autocomplete="username" />
+      <label for="password">Password</label>
+      <input id="password" type="password" placeholder="********" required autocomplete="current-password" />
+      <button type="submit">Login</button>
+    </form>
+    <div class="forgot-password">
+      <button id="forgot-password-btn" type="button">Lupa Password?</button>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="modal-forgot-password">
+    <div class="modal-content">
+      <h3>Lupa Password</h3>
+      <p>Masukkan email Anda untuk reset password:</p>
+      <input type="email" id="forgot-email" placeholder="email@example.com" />
+      <button id="send-reset-btn">Kirim Link Reset</button>
+      <button id="close-forgot-btn" class="close-btn">Batal</button>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="main-app" role="main" aria-label="E-Learning Main Application">
+    <header>E-Learning Dashboard</header>
+    <nav aria-label="Main navigation">
+      <button class="active" id="tab-dashboard" aria-controls="dashboard" aria-selected="true" role="tab">Dashboard</button>
+      <button id="tab-mainmenu" aria-controls="mainmenu" aria-selected="false" role="tab">Main Menu</button>
+      <button id="tab-settings" aria-controls="settings" aria-selected="false" role="tab">Pengaturan</button>
+    </nav>
+
+    <!-- Dashboard View -->
+    <section class="tab-content" id="dashboard" role="tabpanel" aria-labelledby="tab-dashboard">
+      <div class="dashboard-grid">
+        <div class="card" aria-label="Capaian Harian Siswa">
+          <h3>Capaian Harian Murid</h3>
+          <ul>
+            <li>Mengerjakan latihan soal matematika: 90%</li>
+            <li>Membaca bab 3 bahasa Indonesia: Selesai</li>
+            <li>Menyelesaikan tugas IPA: 80%</li>
+          </ul>
+        </div>
+        <div class="card" aria-label="Jadwal Pelajaran Hari Ini">
+          <h3>Jadwal Pelajaran Hari Ini</h3>
+          <ul>
+            <li>08:00 - 09:30: Matematika</li>
+            <li>09:45 - 11:15: Bahasa Indonesia</li>
+            <li>13:00 - 14:30: IPA</li>
+          </ul>
+        </div>
+        <div class="card" aria-label="Jadwal Ujian Semester">
+          <h3>Jadwal Ujian Semester</h3>
+          <ul>
+            <li>15 Juni 2024 - Ujian Matematika</li>
+            <li>17 Juni 2024 - Ujian Bahasa Indonesia</li>
+            <li>20 Juni 2024 - Ujian IPA</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Menu View -->
+    <section class="tab-content" id="mainmenu" role="tabpanel" aria-labelledby="tab-mainmenu" hidden>
+      <div id="menu-sections" role="tablist" aria-label="Menu Seksi">
+        <button class="active" data-section="subjects" role="tab" aria-selected="true" aria-controls="subjects">Mata Pelajaran</button>
+        <button data-section="attendance" role="tab" aria-selected="false" aria-controls="attendance">Kehadiran (Scan Barcode)</button>
+        <button data-section="scores" role="tab" aria-selected="false" aria-controls="scores">Nilai Tengah&Akhir Semester</button>
+      </div>
+
+      <!-- Subjects Section -->
+      <div id="subjects" class="section-content" role="tabpanel" aria-labelledby="subjects-tab">
+        <h3>Mata Pelajaran</h3>
+        <ul>
+          <li>Matematika</li>
+          <li>Bahasa Indonesia</li>
+          <li>IPA</li>
+          <li>IPS</li>
+          <li>Bahasa Inggris</li>
+          <li>Agama</li>
+        </ul>
+      </div>
+
+      <!-- Attendance Section -->
+      <div id="attendance" class="section-content" role="tabpanel" aria-labelledby="attendance-tab" hidden>
+        <h3>Kehadiran - Scan Barcode</h3>
+        <video id="video" autoplay playsinline></video>
+        <div class="scan-status" aria-live="polite" id="scan-status">Arahkan kamera ke barcode Anda</div>
+        <button id="btn-scan-stop" style="margin-top:10px; background:#d9534f; color:white; border:none; padding:10px 0; width:100%; border-radius: 12px; font-weight:700; cursor:pointer;">Berhenti Scan</button>
+      </div>
+
+      <!-- Scores Section -->
+      <div id="scores" class="section-content" role="tabpanel" aria-labelledby="scores-tab" hidden>
+        <h3>Nilai Tengah & Akhir Semester</h3>
+        <table aria-label="Tabel Nilai">
+          <thead>
+            <tr>
+              <th>Mata Pelajaran</th>
+              <th>Nilai Tengah Semester</th>
+              <th>Nilai Akhir Semester</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Matematika</td><td>85</td><td>88</td></tr>
+            <tr><td>Bahasa Indonesia</td><td>90</td><td>91</td></tr>
+            <tr><td>IPA</td><td>79</td><td>85</td></tr>
+            <tr><td>IPS</td><td>82</td><td>84</td></tr>
+            <tr><td>Bahasa Inggris</td><td>87</td><td>89</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Settings View -->
+    <section class="tab-content" id="settings" role="tabpanel" aria-labelledby="tab-settings" hidden>
+      <form id="profile-form" novalidate>
+        <h3>Profil</h3>
+        <label for="photo-upload">Foto</label>
+        <input type="file" id="photo-upload" accept="image/*" aria-describedby="photo-desc" />
+        <img id="profile-photo-preview" alt="Preview Foto Profil" src="" />
+        <label for="name">Nama</label>
+        <input type="text" id="name" placeholder="Nama lengkap" required />
+
+        <div class="form-row">
+          <div>
+            <label for="birthdate">Tanggal Lahir</label>
+            <input type="date" id="birthdate" required />
+          </div>
+          <div>
+            <label for="birthplace">Kota Kelahiran</label>
+            <input type="text" id="birthplace" placeholder="Kota kelahiran" required />
+          </div>
+        </div>
+        <label for="address">Alamat</label>
+        <input type="text" id="address" placeholder="Alamat tempat tinggal" required />
+
+        <label for="student-id">No Pokok Siswa</label>
+        <input type="text" id="student-id" placeholder="Nomor pokok siswa" required />
+
+        <div class="form-row">
+          <div>
+            <label for="father-name">Nama Ayah</label>
+            <input type="text" id="father-name" placeholder="Nama ayah" required />
+          </div>
+          <div>
+            <label for="mother-name">Nama Ibu</label>
+            <input type="text" id="mother-name" placeholder="Nama ibu" required />
+          </div>
+        </div>
+        <label for="phone">No Handphone</label>
+        <input type="tel" id="phone" placeholder="No handphone" required />
+
+        <hr style="margin: 24px 0; border-color: #d8d3e4;" />
+
+        <label for="school-origin">Asal Sekolah</label>
+        <input type="text" id="school-origin" placeholder="Asal sekolah" required />
+        <label for="graduation-year">Tahun Kelulusan</label>
+        <input type="text" id="graduation-year" placeholder="Tahun kelulusan" required />
+
+        <hr style="margin: 24px 0; border-color: #d8d3e4;" />
+
+        <label for="change-email">Ganti Email</label>
+        <input type="email" id="change-email" placeholder="Email baru" />
+        <label for="change-password">Ganti Password</label>
+        <input type="password" id="change-password" placeholder="Password baru" />
+
+        <button class="save-btn" type="submit">Simpan Semua Perubahan</button>
+      </form>
+      <button id="btn-exit" type="button">Keluar</button>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+  // Utils for navigating tabs
+  const $ = (s, root=document) => root.querySelector(s);
+  const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+
+  // Elements
+  const loginScreen = $('#login-screen');
+  const mainApp = $('#main-app');
+  const loginForm = $('#login-form');
+  const forgotBtn = $('#forgot-password-btn');
+  const modalForgot = $('#modal-forgot-password');
+  const sendResetBtn = $('#send-reset-btn');
+  const closeForgotBtn = $('#close-forgot-btn');
+  const forgotEmailInput = $('#forgot-email');
+
+  // Main App navigation buttons
+  const tabButtons = $$('nav button', mainApp);
+  const tabContents = $$('section.tab-content', mainApp);
+
+  // Main menu internal navigation
+  const menuButtons = $$('#menu-sections button', mainApp);
+  const menuSections = $$('#mainmenu .section-content', mainApp);
+
+  // Attendance video and controls
+  const videoElement = $('#video');
+  const scanStatus = $('#scan-status');
+  const scanStopBtn = $('#btn-scan-stop');
+
+  // Settings form and controls
+  const profileForm = $('#profile-form');
+  const photoUpload = $('#photo-upload');
+  const photoPreview = $('#profile-photo-preview');
+  const exitBtn = $('#btn-exit');
+
+  // State
+  let activeTab = 'dashboard';
+  let activeMenuSection = 'subjects';
+  let videoStream = null;
+  let scanActive = false;
+
+  // Fake authentication for demo
+  const demoEmail = "siswa@elearning.com";
+  const demoPassword = "123456";
+
+  // On login submit
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const email = $('#email').value.trim().toLowerCase();
+    const password = $('#password').value.trim();
+    if(email === demoEmail && password === demoPassword) {
+      alert('Login berhasil!');
+      showMainApp();
+    } else {
+      alert('Email atau password salah!');
+    }
+  });
+
+  // Show forgot password modal
+  forgotBtn.addEventListener('click', () => {
+    modalForgot.style.display = 'flex';
+    forgotEmailInput.value = '';
+    forgotEmailInput.focus();
+  });
+
+  // Close forgot password modal
+  closeForgotBtn.addEventListener('click', () => {
+    modalForgot.style.display = 'none';
+  });
+
+  // Send reset (simulate)
+  sendResetBtn.addEventListener('click', () => {
+    const email = forgotEmailInput.value.trim();
+    if(!email) {
+      alert('Harap masukkan email terlebih dahulu.');
+      forgotEmailInput.focus();
+      return;
+    }
+    alert('Link reset password telah dikirim ke '+email);
+    modalForgot.style.display = 'none';
+  });
+
+  // Show main app and hide login
+  function showMainApp() {
+    loginScreen.style.display = 'none';
+    mainApp.style.display = 'flex';
+    activateTab(activeTab);
+    activateMenuSection(activeMenuSection);
+  }
+
+  // Navigation tab click handlers
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(btn.classList.contains('active')) return;
+      activateTab(btn.id.replace('tab-', ''));
+    });
+  });
+
+  function activateTab(tabName) {
+    activeTab = tabName;
+    tabButtons.forEach(btn => {
+      const isActive = btn.id === 'tab-'+tabName;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', isActive);
+    });
+    tabContents.forEach(section => {
+      section.hidden = section.id !== tabName;
+    });
+  }
+
+  // Main menu internal navigation
+  menuButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(btn.classList.contains('active')) return;
+      activateMenuSection(btn.getAttribute('data-section'));
+    });
+  });
+
+  function activateMenuSection(sectionName) {
+    activeMenuSection = sectionName;
+    menuButtons.forEach(btn => {
+      const isActive = btn.getAttribute('data-section') === sectionName;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', isActive);
+    });
+    menuSections.forEach(section => {
+      section.hidden = section.id !== sectionName;
+    });
+    if(sectionName === 'attendance') {
+      startBarcodeScan();
+    } else {
+      stopBarcodeScan();
+    }
+  }
+
+  // Settings photo upload preview
+  photoUpload.addEventListener('change', () => {
+    const file = photoUpload.files[0];
+    if (!file) {
+      photoPreview.src = '';
+      photoPreview.style.background = '#ddd';
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      alert('Format file tidak didukung. Harap pilih gambar.');
+      photoUpload.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => {
+      photoPreview.src = e.target.result;
+      photoPreview.style.background = 'transparent';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Save settings
+  profileForm.addEventListener('submit', e => {
+    e.preventDefault();
+    // Basic validation, can be expanded
+    if(!profileForm.checkValidity()) {
+      alert('Harap isi semua data profil dengan benar');
+      return;
+    }
+    alert('Perubahan profil berhasil disimpan!');
+  });
+
+  // Exit button
+  exitBtn.addEventListener('click', () => {
+    const confirmExit = confirm('Yakin ingin keluar dari aplikasi?');
+    if(confirmExit) {
+      logout();
+    }
+  });
+
+  // Logout - reset view to login
+  function logout() {
+    stopBarcodeScan();
+    mainApp.style.display = 'none';
+    loginScreen.style.display = 'block';
+    loginForm.reset();
+    activeTab = 'dashboard';
+    activeMenuSection = 'subjects';
+    activateTab(activeTab);
+    activateMenuSection(activeMenuSection);
+  }
+
+  // Barcode scanning code (simulated)
+  async function startBarcodeScan() {
+    if(scanActive) return;
+    scanStatus.textContent = 'Mencari kamera...';
+    try {
+      videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      videoElement.srcObject = videoStream;
+      scanStatus.textContent = 'Arahkan kamera ke barcode Anda';
+      scanActive = true;
+      simulateScan();
+    } catch (err) {
+      scanStatus.textContent = 'Gagal mengakses kamera: ' + err.message;
+      scanActive = false;
+    }
+  }
+
+  function stopBarcodeScan() {
+    if (videoStream) {
+      videoStream.getTracks().forEach(track => track.stop());
+      videoStream = null;
+    }
+    videoElement.srcObject = null;
+    scanStatus.textContent = '';
+    scanActive = false;
+  }
+
+  // Simulate scanning by a timer for demo
+  function simulateScan() {
+    if(!scanActive) return;
+    scanStatus.textContent = 'Mendeteksi barcode...';
+    setTimeout(() => {
+      if(!scanActive) return;
+      // Simulate success scan message
+      scanStatus.textContent = 'Barcode terdeteksi. Kehadiran berhasil dicatat!';
+      // After 3 seconds revert back to request scan
+      setTimeout(() => {
+        if(!scanActive) return;
+        scanStatus.textContent = 'Arahkan kamera ke barcode Anda';
+        simulateScan();
+      }, 3000);
+    }, 4000);
+  }
+
+  // Stop scan button
+  scanStopBtn.addEventListener('click', () => {
+    stopBarcodeScan();
+    scanStatus.textContent = 'Scan dihentikan';
+  });
+
+  // Accessibility - trap focus in modal
+  modalForgot.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') {
+      modalForgot.style.display = 'none';
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
+
